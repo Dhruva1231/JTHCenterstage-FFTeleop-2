@@ -108,11 +108,7 @@ public class BlueAuto2plus7 extends LinearOpMode {
     public static double maxaccel2 = 30;
     private ElapsedTime timer = new ElapsedTime();
 
-    enum scanner{
-        LEFT,
-        MIDDLE,
-        RIGHT
-    }
+
     enum State {
         PRELOAD_YELLOW,            // Drop yellow preload on backdrop
         PRELOAD_YELLOW_INTER,
@@ -161,6 +157,8 @@ public class BlueAuto2plus7 extends LinearOpMode {
 
         IDLE,              // Our bot will enter the IDLE state when done
     }
+
+    private boolean left = true;
     private PIDController Lcontroller;
     public static double Lp = 0.006, Li = 0, Ld = 0.0001;
     private DcMotorEx intakeLeftExt;
@@ -236,7 +234,7 @@ public class BlueAuto2plus7 extends LinearOpMode {
         intakeLeftExt.setDirection(DcMotorSimple.Direction.REVERSE);
         outtakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-//        switchservo.setPosition(0.12);
+//        switchservo.setPosition(0.35);
 
         Lcontroller = new PIDController(Lp,Li,Ld);
         Ocontroller = new PIDController(Op,Oi,Od);
@@ -437,19 +435,19 @@ public class BlueAuto2plus7 extends LinearOpMode {
 
         waitForStart();
 
-        BlueScanner scanner = null;
-        Barcode result = scanner.getResult();
-        switch (result) {
-            case LEFT:
-                telemetry.addData("Detected", "Left");
-                break;
-            case MIDDLE:
-                telemetry.addData("Detected", "Middle");
-                break;
-            case RIGHT:
-                telemetry.addData("Detected", "Right");
-                break;
-        }
+//        BlueScanner scanner = null;
+//        Barcode result = scanner.getResult();
+//        switch (result) {
+//            case LEFT:
+//                telemetry.addData("Detected", "Left");
+//                break;
+//            case MIDDLE:
+//                telemetry.addData("Detected", "Middle");
+//                break;
+//            case RIGHT:
+//                telemetry.addData("Detected", "Right");
+//                break;
+//        }
 
 
 
@@ -457,7 +455,7 @@ public class BlueAuto2plus7 extends LinearOpMode {
 
         state = PRELOAD_YELLOW;
         timer.reset();
-        result = Barcode.LEFT;
+//        result = Barcode.LEFT;
 
         while (opModeIsActive() && !isStopRequested()) {
 //            pivot1.setPosition(servoPosition);
@@ -474,185 +472,82 @@ public class BlueAuto2plus7 extends LinearOpMode {
 
             switch(state){
                 case PRELOAD_YELLOW:
-                    servoPosition = servohold;
-                    panpos = 0.47;
-                    Otarget = -25;
-//                    Ltarget = -50;
-                    flip1pos = 0.26;
-                    wristpos = 0.87;
-                    claw1pos = 0.9;
-                    claw2pos = 0.1;
-                    if(result == Barcode.LEFT){
+                    if(left){
                         drive.followTrajectorySequenceAsync(preload1);
-                        timer.reset();
-                        state = PRELOAD_YELLOW_INTER;
-                    }else if(result == Barcode.MIDDLE){
-                        drive.followTrajectorySequenceAsync(preload2);
-                        timer.reset();
-                        state = PRELOAD_YELLOW_INTER;
-                    }
-                    if(result == Barcode.RIGHT){
-                        drive.followTrajectorySequenceAsync(preload3);
                         timer.reset();
                         state = PRELOAD_YELLOW_INTER;
                     }
                     break;
 
                 case PRELOAD_YELLOW_INTER:
-                    if(timer.seconds() > 1){
-                        flip1pos = 0.81;
-                    }
-                    if(timer.seconds() > 1.25){
-                        wristpos = 0.51;
-                    }
-                    if(!drive.isBusy() && timer.seconds() > 1.5){
+                    if(!drive.isBusy()){
                         timer.reset();
                         state = PRELOAD_YELLOW_DROP;
                     }
                     break;
 
                 case PRELOAD_YELLOW_DROP:
-                    if(timer.seconds() > 0){
-                        claw1pos = 0.4;
-                        claw2pos = 0.6;
-                        flip = intake5flip;
+                    if(left){
+                        drive.followTrajectorySequenceAsync(preload2_v1_5);
                         timer.reset();
                         state = CYCLE1_PRE;
                     }
                     break;
 
                 case CYCLE1_PRE:
-                    if(timer.seconds() > 0){
-//                        Ltarget = 0;
-                    }
-                    if(timer.seconds() > 0 && Math.abs(intakeLeftExt.getCurrentPosition() - Ltarget) < 100){
-                        flip = intake5flip;
-                        if(result == Barcode.LEFT){
-                            drive.followTrajectorySequenceAsync(preload2_v1_5);
-                            timer.reset();
-                            state = CYCLE1_INTAKE;
-                        }
-                        if(result == Barcode.MIDDLE){
-                            drive.followTrajectorySequenceAsync(preload2_v2_5);
-                            timer.reset();
-                            state = CYCLE1_INTAKE;
-                        }
-                        if(result == Barcode.RIGHT){
-                            drive.followTrajectorySequenceAsync(preload2_v3_5);
-                            timer.reset();
-                            state = CYCLE1_INTAKE;
-                        }
+                    if(!drive.isBusy()){
+                        timer.reset();
+                        state = CYCLE1_INTAKE;
                     }
                     break;
 
                 case CYCLE1_INTAKE:
-                    if(timer.seconds() > 0.2){
-                        wristpos = 0.87;
-                        flip = intake5flip;
-                    }
-                    if(timer.seconds() > 0.5){
-                        Otarget = -25;
-                        flip1pos = 0.3;
-                    }
-                    if(timer.seconds() > 0.8){
-                        flip1pos = 0.26;
-                    }
-                    if(timer.seconds() > 3 && timer.seconds() < 3.6){
-                        intakePower = -1;
-//                        Ltarget = 1000;
-                    }else if(timer.seconds() > 3.6){
-//                        Ltarget = 1130;
-                    }
-                    intake1 = intSensor2.isPressed();
-                    intake2 = intSensor1.isPressed();
-                    if((intake1 || intake2)){
-                        flip = intake4flip;
-//                        intake1 = false;
-//                        intake2 = false;
-                        timer.reset();
-                        state = SPIT3;
-                    }
-                    if(!drive.isBusy() && timer.seconds() > 3.7){
+                    if(left){
+                        drive.followTrajectorySequenceAsync(deposit_v1);
                         timer.reset();
                         state = SPIT2;
                     }
                     break;
 
                 case SPIT2:
-                    intake1 = intSensor2.isPressed();
-                    intake2 = intSensor1.isPressed();
-                    if((intake1 || intake2)){
-                        flip = intake4flip;
-//                        intake1 = false;
-//                        intake2 = false;
+                    if(!drive.isBusy()){
                         timer.reset();
                         state = SPIT3;
                     }
                     break;
 
                 case SPIT3:
-                    intake1 = intSensor2.isPressed();
-                    intake2 = intSensor1.isPressed();
-                    if((intake1 && intake2)){
-//                        intake1 = false;
-//                        intake2 = false;
+                    if(left){
+                        drive.followTrajectorySequenceAsync(cycle2_v1);
                         timer.reset();
                         state = CYCLE1_INTER2;
-                    }
-                    if(!drive.isBusy()){
-                        if(timer.seconds()> 0.75){
-//                            Ltarget = 1300;
-                        }
-//                        if(timer.seconds()> 1){
-//                            Ltarget = 1450;
-//                        }
                     }
                     break;
 
                 case CYCLE1_INTER2:
-                    if(timer.seconds() > 0.1){
-//                        Ltarget = -25;
-                        intakePower = -0.5;
-                        if(result == Barcode.LEFT){
-                            drive.followTrajectorySequenceAsync(deposit_v1);
-                            timer.reset();
-                            state = CYCLE1_TRANSFERINTER;
-                        }
-                        if(result == Barcode.MIDDLE){
-                            drive.followTrajectorySequenceAsync(deposit_v2);
-                            timer.reset();
-                            state = CYCLE1_TRANSFERINTER;
-                        }
-                        if(result == Barcode.RIGHT){
-                            drive.followTrajectorySequenceAsync(deposit_v3);
-                            timer.reset();
-                            state = CYCLE1_TRANSFERINTER;
-                        }
+                    if(!drive.isBusy()){
+                        timer.reset();
+                        state = CYCLE1_TRANSFERINTER;
                     }
                     break;
 
                 case CYCLE1_TRANSFERINTER:
-                    if(timer.seconds() > 0.25 && Math.abs(intakeLeftExt.getCurrentPosition() - Ltarget) < 75){
+                    if(timer.seconds() > 0.25){
                         timer.reset();
                         state = CYCLE1_TRANSFER1;
                     }
                     break;
 
                 case CYCLE1_TRANSFER1:
-                    if(timer.seconds() > 0.25){
-                        flip = transferflip;
+                    if(left){
+                        drive.followTrajectorySequenceAsync(deposit_v1_2);
                         timer.reset();
                         state = CYCLE1_TRANSFER1_5;
                     }
                     break;
 
                 case CYCLE1_TRANSFER1_5:
-                    if(timer.seconds() > 0.9){
-                        claw1pos = 0.9;
-                        claw2pos = 0.1;
-                        timer.reset();
-                        state = CYCLE1_TRANSFER2;
-                    }
+
                     break;
 
                 case CYCLE1_TRANSFER2:
@@ -721,21 +616,21 @@ public class BlueAuto2plus7 extends LinearOpMode {
                         panpos = 0.47;
                         flip1pos = 0.32;
                         Otarget = -25;
-                        if(result == Barcode.LEFT){
+                        if(left){
                             drive.followTrajectorySequenceAsync(cycle2_v1);
                             timer.reset();
                             state = CYCLE2_INTER_5;
                         }
-                        if(result == Barcode.MIDDLE){
-                            drive.followTrajectorySequenceAsync(cycle2_v2);
-                            timer.reset();
-                            state = CYCLE2_INTER_5;
-                        }
-                        if(result == Barcode.RIGHT){
-                            drive.followTrajectorySequenceAsync(cycle2_v3);
-                            timer.reset();
-                            state = CYCLE2_INTER_5;
-                        }
+//                        if(result == Barcode.MIDDLE){
+//                            drive.followTrajectorySequenceAsync(cycle2_v2);
+//                            timer.reset();
+//                            state = CYCLE2_INTER_5;
+//                        }
+//                        if(result == Barcode.RIGHT){
+//                            drive.followTrajectorySequenceAsync(cycle2_v3);
+//                            timer.reset();
+//                            state = CYCLE2_INTER_5;
+//                        }
                     }
                     break;
 
@@ -753,7 +648,7 @@ public class BlueAuto2plus7 extends LinearOpMode {
                     break;
 
                 case CYCLE2_INTER1:
-                    if((Math.abs(intakeLeftExt.getCurrentPosition() - Ltarget) < 50) || timer.seconds() > 0.1){
+                    if(timer.seconds() > 0.1){
                         flip = intake2flip;
                         timer.reset();
                         state = CYCLE2_INTAKE;
@@ -781,22 +676,22 @@ public class BlueAuto2plus7 extends LinearOpMode {
                         intakePower = -0.5;
                     }
 
-                    if(timer.seconds() > 0.25 && Math.abs(intakeLeftExt.getCurrentPosition() - Ltarget) < 75){
-                        if(result == Barcode.LEFT){
+                    if(timer.seconds() > 0.25){
+                        if(left){
                             drive.followTrajectorySequenceAsync(deposit_v1_2);
                             timer.reset();
                             state = CYCLE2_TRANSFERINTER;
                         }
-                        if(result == Barcode.MIDDLE){
-                            drive.followTrajectorySequenceAsync(deposit_v2_2);
-                            timer.reset();
-                            state = CYCLE2_TRANSFERINTER;
-                        }
-                        if(result == Barcode.RIGHT){
-                            drive.followTrajectorySequenceAsync(deposit_v3_2);
-                            timer.reset();
-                            state = CYCLE2_TRANSFERINTER;
-                        }
+//                        if(result == Barcode.MIDDLE){
+//                            drive.followTrajectorySequenceAsync(deposit_v2_2);
+//                            timer.reset();
+//                            state = CYCLE2_TRANSFERINTER;
+//                        }
+//                        if(result == Barcode.RIGHT){
+//                            drive.followTrajectorySequenceAsync(deposit_v3_2);
+//                            timer.reset();
+//                            state = CYCLE2_TRANSFERINTER;
+//                        }
                     }
                     break;
 
@@ -934,21 +829,21 @@ public class BlueAuto2plus7 extends LinearOpMode {
 
                     if(timer.seconds() > 0.1 && Math.abs(intakeLeftExt.getCurrentPosition() - Ltarget) < 650){
                         intakePower = -0.5;
-                        if(result == Barcode.LEFT){
+                        if(left){
                             drive.followTrajectorySequenceAsync(deposit_v1_3);
                             timer.reset();
                             state = CYCLE3_TRANSFERINTER;
                         }
-                        if(result == Barcode.MIDDLE){
-                            drive.followTrajectorySequenceAsync(deposit_v2_3);
-                            timer.reset();
-                            state = CYCLE3_TRANSFERINTER;
-                        }
-                        if(result == Barcode.RIGHT){
-                            drive.followTrajectorySequenceAsync(deposit_v3_3);
-                            timer.reset();
-                            state = CYCLE3_TRANSFERINTER;
-                        }
+//                        if(result == Barcode.MIDDLE){
+//                            drive.followTrajectorySequenceAsync(deposit_v2_3);
+//                            timer.reset();
+//                            state = CYCLE3_TRANSFERINTER;
+//                        }
+//                        if(result == Barcode.RIGHT){
+//                            drive.followTrajectorySequenceAsync(deposit_v3_3);
+//                            timer.reset();
+//                            state = CYCLE3_TRANSFERINTER;
+//                        }
                     }
                     break;
 
@@ -1026,8 +921,8 @@ public class BlueAuto2plus7 extends LinearOpMode {
 
             double Lpower = Lpid;
 
-//            intakeLeftExt.setPower(Lpower);
-//            intakeRightExt.setPower(Lpower);
+            intakeLeftExt.setPower(Lpower);
+            intakeRightExt.setPower(Lpower);
 
             Ocontroller.setPID(Op, Oi, Od);
 

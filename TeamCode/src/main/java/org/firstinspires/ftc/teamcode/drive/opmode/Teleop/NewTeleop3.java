@@ -8,6 +8,7 @@ import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.flip
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.flip.initializeflip;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.flip.intake1flip;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.flip.intake2flip;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.flip.intake3flip;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.flip.intake5flip;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.flip.intakeflip;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.flip.transferflip;
@@ -40,6 +41,11 @@ import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.stat
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.shoot;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.transfer;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.transferinter;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.wristposotion.diagonalleft;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.wristposotion.diagonalright;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.wristposotion.horizontal;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.wristposotion.verticalleft;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.wristposotion.verticalright;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3red.servotransferpos;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -72,6 +78,11 @@ import org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto;
 @Config
 @TeleOp(name="Blue Teleop")
 public class NewTeleop3 extends OpMode {
+
+    boolean wbool1 = false;
+    boolean wbool2 = false;
+    boolean wbool3 = false;
+    boolean wbool4 = false;
     public static double servointakepos = 0.32;
     enum flip{
         initializeflip,
@@ -85,8 +96,24 @@ public class NewTeleop3 extends OpMode {
         betweenflip
     }
 
-    flip flip = initializeflip;
 
+    enum wristposotion{
+        horizontal,
+        verticalleft,
+        diagonalleft,
+        verticalright,
+        diagonalright,
+        inter
+    }
+
+    //horizonal = 0.53
+    //vertical left = 0.17
+    //diagonal left = 0.35
+    //vertical right = 0.87
+    //diagonal right = 0.7
+
+    flip flip = initializeflip;
+    wristposotion wristposition = horizontal;
     private MotionProfile profile;
 
     private double startTime;
@@ -213,6 +240,7 @@ public class NewTeleop3 extends OpMode {
     state New = initialization1;
     stackpos stackposition = normal;
     ElapsedTime timer  = new ElapsedTime();
+    ElapsedTime wristtimer  = new ElapsedTime();
     ElapsedTime holdtimer  = new ElapsedTime();
     ElapsedTime holdtimer2  = new ElapsedTime();
     public static double claw1pos = 0.4;
@@ -221,18 +249,20 @@ public class NewTeleop3 extends OpMode {
 
     public static double flip1pos = 0.26;
     public static double servoPosition;
+    public static double climbservoPosition = 0.55;
 
     public Servo flip1;
     public Servo latch;
     public Servo flip2;
     public Servo pivot1;
     public Servo pivot2;
+    public Servo climb;
     public Servo airplane;
 
     public Servo switchservo;
     public AnalogInput distance1;
     public static double Hp = 0.03;
-    public static double one = 0.12;
+    public static double one = 0.35;
     public static double two = 0.3;
     public static double plane = 0.5;
 
@@ -275,6 +305,7 @@ public class NewTeleop3 extends OpMode {
         claw1 = hardwareMap.get(Servo.class, "0s");
         claw2 = hardwareMap.get(Servo.class, "1s");
         pan = hardwareMap.get(Servo.class, "2ss");
+        climb = hardwareMap.get(Servo.class, "2s");
 
         intakeLeftExt.setDirection(DcMotorSimple.Direction.REVERSE);
         outtakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -294,7 +325,7 @@ public class NewTeleop3 extends OpMode {
         leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
-        switchservo.setPosition(0.12);
+        switchservo.setPosition(0.35);
         latch.setPosition(0.7);
         airplane.setPosition(0.5);
 //        generateMotionProfile(pivot1.getPosition(), pivot1.getPosition(), 15, 15);
@@ -306,6 +337,7 @@ public class NewTeleop3 extends OpMode {
     public void start() {
         startTime = getRuntime();
         timer.reset();
+        wristtimer.reset();
         // Get the current time
     }
 
@@ -335,11 +367,12 @@ public class NewTeleop3 extends OpMode {
 
         switchservo.setPosition(one);
 
-//        latch.setPosition(two);
+        latch.setPosition(two);
         leftFrontDrive.setPower(leftFrontPower);
         rightFrontDrive.setPower(rightFrontPower);
         leftBackDrive.setPower(leftBackPower);
         rightBackDrive.setPower(rightBackPower);
+        climb.setPosition(climbservoPosition);
 
 //        double elapsedTime = getRuntime() - startTime;
 //        double servoPosition = profile.get(elapsedTime).getX();
@@ -353,8 +386,8 @@ public class NewTeleop3 extends OpMode {
         flip1.setPosition(flip1pos);
         flip2.setPosition(1-flip1pos);
 
-        claw1.setPosition(claw1pos);
-        claw2.setPosition(claw2pos);
+        claw1.setPosition(claw2pos);
+        claw2.setPosition(claw1pos);
 
         switch (New) {
             case initialization1:
@@ -486,15 +519,17 @@ public class NewTeleop3 extends OpMode {
                     intakePower = 1;
                 }
 
-//                if((gamepad1.dpad_up)||(intSensor1.isPressed() && intSensor2.isPressed())){
-//                    intaking = false;
-//                    slow = 1;
-//                    turnslow = 1;
-////                    intakeMotor.setPower(-0.5);
-//                    intakePower = -0.5;
-//                    timer.reset();
-//                    New = retardintake1;
-//                }
+                if((gamepad1.dpad_up)||(intSensor1.isPressed() && intSensor2.isPressed())){
+                    intaking = false;
+                    slow = 1;
+                    turnslow = 1;
+//                    intakeMotor.setPower(-0.5);
+                    intakePower = -1;
+                    timer.reset();
+                    flip = intake3flip;
+
+                    New = intakeinter1;
+                }
                 break;
 
             case retardintake1:
@@ -573,13 +608,25 @@ public class NewTeleop3 extends OpMode {
                 break;
 
             case outtakeinter:
-                if(gamepad2.cross || gamepad1.cross){
-                    if(timer.seconds() > 0.5){
-                        Otarget = 200;
-                        flip1pos = 0.81;
-                        intakePower = 0;
+                if(timer.seconds() > 0.49){
+                    if(intSensor2.isPressed() && intSensor1.isPressed()){
                         timer.reset();
-                        New = barrier;
+                        flip = intakeflip;
+                        //fix claw pos
+                        claw1pos = 0.4;
+                        claw2pos = 0.6;
+                        New = retardintake1;
+                    }
+                }
+                if(timer.seconds()>0.5){
+                    if(gamepad2.cross || gamepad1.cross){
+                        if(timer.seconds() > 0.5){
+                            Otarget = 200;
+                            flip1pos = 0.81;
+                            intakePower = 0;
+                            timer.reset();
+                            New = barrier;
+                        }
                     }
                 }
                 break;
@@ -615,16 +662,23 @@ public class NewTeleop3 extends OpMode {
                     strafeslowmode = 1;
                 }
 
-                if((gamepad1.right_trigger > 0 && gamepad1.left_trigger > 0)||(gamepad2.right_trigger > 0 && gamepad2.left_trigger > 0)){
-                    wristpos = 0.53;
-                }
-                else if((gamepad1.right_trigger > 0 && gamepad1.left_trigger == 0)||(gamepad2.right_trigger > 0 && gamepad2.left_trigger == 0)){
-                    wristpos = 0.87;
-                }
-                else if((gamepad1.left_trigger > 0 && gamepad1.right_trigger == 0)||(gamepad2.left_trigger > 0 && gamepad2.right_trigger == 0)){
-                    wristpos = 0.17;
-                }
 
+                //horizonal = 0.53
+                //vertical left = 0.17
+                //diagonal left = 0.35
+                //vertical right = 0.87
+                //diagonal right = 0.7
+
+                wbool1 = true;
+//                if((gamepad1.right_trigger > 0 && gamepad1.left_trigger > 0)||(gamepad2.right_trigger > 0 && gamepad2.left_trigger > 0)){
+//                    wristpos = 0.53;
+//                }
+//                else if((gamepad1.right_trigger > 0 && gamepad1.left_trigger == 0)||(gamepad2.right_trigger > 0 && gamepad2.left_trigger == 0)){
+//                    wristpos = 0.87;
+//                }
+//                else if((gamepad1.left_trigger > 0 && gamepad1.right_trigger == 0)||(gamepad2.left_trigger > 0 && gamepad2.right_trigger == 0)){
+//                    wristpos = 0.17;
+//                }
                 if((gamepad1.left_bumper||gamepad2.left_bumper) && timer.seconds() > 0.5){
                     left = true;
                     claw1pos = 0.4;
@@ -641,7 +695,10 @@ public class NewTeleop3 extends OpMode {
                 break;
 
             case deposit:
-                if(timer.seconds() > 0.25){
+                wbool1 = false;
+                wristposition = horizontal;
+                if(timer.seconds() > 0.5){
+                    wbool1 = false;
                     left = false;
                     right = false;
                     c1pos = 0.1;
@@ -649,13 +706,13 @@ public class NewTeleop3 extends OpMode {
                     wristpos = 0.87;
                     flip1pos = 0.35;
                 }
-                if(timer.seconds() > 0.5){
+                if(timer.seconds() > 0.75){
                     Otarget = 125;
                 }
-                if(timer.seconds() > 0.75){
+                if(timer.seconds() > 1){
                     Otarget = 50;
                 }
-                if(timer.seconds() > 0.75){
+                if(timer.seconds() > 1){
                     Otarget = -25;
                     timer.reset();
                     New = pre;
@@ -685,8 +742,8 @@ public class NewTeleop3 extends OpMode {
 
         double Lpower = Lpid;
 
-//        intakeLeftExt.setPower(Lpower);
-//        intakeRightExt.setPower(Lpower);
+        intakeLeftExt.setPower(Lpower);
+        intakeRightExt.setPower(Lpower);
 
         Ocontroller.setPID(Op, Oi, Od);
 
@@ -700,6 +757,107 @@ public class NewTeleop3 extends OpMode {
 
         outtakeMotor.setPower(Opower);
 
+        //horizonal = 0.53
+        //vertical left = 0.17
+        //diagonal left = 0.35
+        //vertical right = 0.87
+        //diagonal right = 0.7
+
+        switch(wristposition){
+            case horizontal:
+                if(timer.seconds() > 0.2 && wbool1){
+                    wristpos = 0.53;
+                }
+                if(gamepad2.left_trigger < 0.1 && gamepad2.right_trigger > 0 && wbool1 && wristtimer.seconds() > 0.15){
+                    wristtimer.reset();
+                    wristposition = diagonalright;
+                }
+
+                if(gamepad2.left_trigger > 0 && gamepad2.right_trigger < 0.1 && wbool1 && wristtimer.seconds() > 0.15){
+                    wristtimer.reset();
+                    wristposition = diagonalleft;
+                }
+
+                if(gamepad2.left_trigger > 0 && gamepad2.right_trigger > 0 && wbool1 && wristtimer.seconds() > 0.15){
+                    wristtimer.reset();
+                    wristposition = horizontal;
+                }
+                break;
+
+            case verticalleft:
+                if(timer.seconds() > 0.2 && wbool1){
+                    wristpos = 0.87;
+                }
+                if(gamepad2.left_trigger < 0.1 && gamepad2.right_trigger > 0 && wbool1 && wristtimer.seconds() > 0.15){
+                    wristtimer.reset();
+                    wristposition = diagonalleft;
+                }
+
+                if(gamepad2.left_trigger > 0 && gamepad2.right_trigger > 0 && wbool1 && wristtimer.seconds() > 0.15){
+                    wristtimer.reset();
+                    wristposition = horizontal;
+                }
+                break;
+
+            case verticalright:
+                if(timer.seconds() > 0.2 && wbool1){
+                    wristpos = 0.19;
+                }
+                if(gamepad2.left_trigger > 0 && gamepad2.right_trigger < 0.1 && wbool1 && wristtimer.seconds() > 0.15){
+                    wristtimer.reset();
+                    wristposition = diagonalright;
+                }
+
+                if(gamepad2.left_trigger > 0 && gamepad2.right_trigger > 0 && wbool1 && wristtimer.seconds() > 0.15){
+                    wristtimer.reset();
+                    wristposition = horizontal;
+                }
+                break;
+
+            case diagonalleft:
+                if(timer.seconds() > 0.2 && wbool1){
+                    wristpos = 0.75;
+                }
+                if(gamepad2.left_trigger > 0 && gamepad2.right_trigger < 0.1 && wbool1 && wristtimer.seconds() > 0.15){
+                    wristtimer.reset();
+                    wristposition = verticalleft;
+                }
+
+                if(gamepad2.left_trigger < 0.1 && gamepad2.right_trigger > 0 && wbool1 && wristtimer.seconds() > 0.15){
+                    wristtimer.reset();
+                    wristposition = horizontal;
+                }
+
+                if(gamepad2.left_trigger > 0 && gamepad2.right_trigger > 0 && wbool1 && wristtimer.seconds() > 0.15){
+                    wristtimer.reset();
+                    wristposition = horizontal;
+                }
+                break;
+
+            case diagonalright:
+                if(timer.seconds() > 0.2 && wbool1){
+                    wristpos = 0.31;
+                }
+                if(gamepad2.left_trigger < 0.1 && gamepad2.right_trigger > 0 && wbool1 && wristtimer.seconds() > 0.15){
+                    wristtimer.reset();
+                    wristposition = verticalright;
+                }
+
+                if(gamepad2.left_trigger > 0 && gamepad2.right_trigger < 0.1 && wbool1 && wristtimer.seconds() > 0.15){
+                    wristtimer.reset();
+                    wristposition = horizontal;
+                }
+
+                if(gamepad2.left_trigger > 0 && gamepad2.right_trigger > 0 && wbool1 && wristtimer.seconds() > 0.15){
+                    wristtimer.reset();
+                    wristposition = horizontal;
+                }
+                break;
+
+            case inter:
+
+                break;
+        }
 
         switch (flip) {
             case initializeflip:

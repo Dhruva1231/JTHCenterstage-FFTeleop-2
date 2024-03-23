@@ -1,54 +1,65 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.Auto;
 
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE1_DEPOSIT;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE1_INTAKE;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE1_INTER1;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE1_INTER2;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE1_PRE;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE1_REATTEMPT1;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE1_REATTEMPT2;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE1_REATTEMPT3;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE1_TRANSFER1;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE1_TRANSFER1_5;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE1_TRANSFER2;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE1_TRANSFER3;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE1_TRANSFER4;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE1_TRANSFERINTER;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE2_DEPOSIT;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE2_INTAKE;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE2_INTER1;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE2_INTER2;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE2_INTER_5;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE2_TRANSFER1;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE2_TRANSFER1_5;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE2_TRANSFER2;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE2_TRANSFER3;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE2_TRANSFERINTER;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE3_DEPOSIT;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE3_INTAKE;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE3_INTER1;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE3_INTER2;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE3_INTER_5;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE3_TRANSFER1;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE3_TRANSFER2;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE3_TRANSFER3;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE3_TRANSFERINTER;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.CYCLE3_TRANSFERINTER2;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.PRELOAD_YELLOW;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.PRELOAD_YELLOW_DROP;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.PRELOAD_YELLOW_INTER;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.SPIT2;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.State.SPIT3;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.flip.betweenflip;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.flip.initializeflip;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.flip.intake1flip;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.flip.intake2flip;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.flip.intake3flip;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.flip.intake4flip;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.flip.intake5flip;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.flip.transferflip;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.flip.transferflip1;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE1_DEPOSIT;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE1_INTAKE;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE1_INTER1;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE1_INTER2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE1_PRE;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE1_REATTEMPT1;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE1_REATTEMPT2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE1_REATTEMPT3;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE1_TRANSFER1;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE1_TRANSFER1_5;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE1_TRANSFER2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE1_TRANSFER3;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE1_TRANSFER4;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE1_TRANSFERINTER;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE2_DEPOSIT;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE2_INTAKE;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE2_INTER1;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE2_INTER2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE2_INTER_5;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE2_TRANSFER1;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE2_TRANSFER1_5;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE2_TRANSFER2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE2_TRANSFER3;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE2_TRANSFERINTER;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE3_DEPOSIT;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE3_INTAKE;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE3_INTER1;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE3_INTER2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE3_INTER_5;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE3_TRANSFER1;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE3_TRANSFER2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE3_TRANSFER3;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE3_TRANSFERINTER;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.CYCLE3_TRANSFERINTER2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.PRELOAD_YELLOW;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.PRELOAD_YELLOW_DROP;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.PRELOAD_YELLOW_INTER;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.SPIT2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.SPIT3;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.inter2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.inter3;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.inter4;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.inter5;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.stack1;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.stack2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.stack3;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.stack4;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.stack5;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.flip.betweenflip;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.flip.initializeflip;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.flip.intake1flip;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.flip.intake2flip;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.flip.intake3flip;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.flip.intake4flip;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.flip.intake5flip;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.flip.transferflip;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.flip.transferflip1;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.profile.MotionProfile;
@@ -65,6 +76,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -76,26 +88,27 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(name="new new states auto ")
-public class NewStatesAuto extends LinearOpMode {
+@Autonomous(name="pegging")
+public class pegging extends LinearOpMode {
     OpenCvWebcam webcam;
 
     private DcMotorEx intakeMotor;
     public DcMotorEx outtakeMotor;
     public static double servotransferpos = 0.88;
     public static double servohold = 0.65;
-    public static double servointake5pos = 0.4;
-    public static double servointake4pos = 0.385;
-    public static double servointake3pos = 0.37;
-    public static double servointake2pos = 0.355;
-    public static double servointake1pos = 0.34;
+    public static double servointake5pos = 0.405;
+    public static double servointake4pos = 0.38;
+    public static double servointake3pos = 0.36;
+    public static double servointake2pos = 0.345;
+    public static double servointake1pos = 0.32;
+
+    private FtcDashboard dashboard = FtcDashboard.getInstance();
 
 
     private PIDController Ocontroller;
     public static int Otarget = -25;
     public static double Op = 0.012, Oi = 0, Od = 0.0002;
     public static double Of = -0.08;
-
 
     enum flip{
         initializeflip,
@@ -117,8 +130,22 @@ public class NewStatesAuto extends LinearOpMode {
 
     public static double maxvel2 = 30;
     public static double maxaccel2 = 30;
+
+    public static double counter = 0;
     private ElapsedTime timer = new ElapsedTime();
     enum State {
+        stack5,
+        inter5,
+        stack4,
+        inter4,
+        stack3,
+        inter3,
+        stack2,
+        inter2,
+        stack1,
+        inter1,
+
+
         PRELOAD_YELLOW,            // Drop yellow preload on backdrop
         PRELOAD_YELLOW_INTER,
         PRELOAD_YELLOW_DROP,           // Drop yellow preload on backdrop
@@ -172,12 +199,14 @@ public class NewStatesAuto extends LinearOpMode {
     private DcMotorEx intakeRightExt;
 
 
+    public static int intakeextendposition = 950;
+    public static int intakeretractposition = 600;
     //Ltarget Max 750, Min -75
     public static int Ltarget;
     private IMU imu;
 
 
-    State state = PRELOAD_YELLOW;
+    State state = stack5;
     Pose2d startPose = new Pose2d(0, 0, Math.toRadians(0));
     private Servo switchservo;
 
@@ -203,7 +232,6 @@ public class NewStatesAuto extends LinearOpMode {
 
     public static double intakePower = 0;
 
-
     public TouchSensor intSensor1;
     public TouchSensor intSensor2;
 
@@ -227,8 +255,8 @@ public class NewStatesAuto extends LinearOpMode {
         intSensor1 = hardwareMap.get(TouchSensor.class, "0t");
         intSensor2 = hardwareMap.get(TouchSensor.class, "1t");
 
-        pivot1 = hardwareMap.get(Servo.class, "2s");
-        pivot2 = hardwareMap.get(Servo.class, "3s");
+        pivot1 = hardwareMap.get(Servo.class, "3s");
+        pivot2 = hardwareMap.get(Servo.class, "0ss");
         flip1 = hardwareMap.get(Servo.class, "4s");
         flip2 = hardwareMap.get(Servo.class, "5s");
         latch = hardwareMap.get(Servo.class, "1ss");
@@ -251,28 +279,21 @@ public class NewStatesAuto extends LinearOpMode {
         wrist.setPosition(0.87);
         pan.setPosition(0.47);
         latch.setPosition(0.3);
-
+        pivot1.setPosition(0.4);
+        pivot2.setPosition(0.6);
 
         TrajectorySequence preload1 = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(23, 12, Math.toRadians(-40)))
-                .setReversed(true)
-                .lineToLinearHeading(new Pose2d(22, 39, Math.toRadians(-95)))
+                .splineTo(new Vector2d(48.5, -20), Math.toRadians(-94))
                 .build();
 
 
         TrajectorySequence preload2 = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(27, 6, Math.toRadians(-40)))
-                .setReversed(true)
-                .lineToLinearHeading(new Pose2d(29, 39.5, Math.toRadians(-95)))
+                .splineTo(new Vector2d(48.5, -20), Math.toRadians(-94))
                 .build();
 
 
         TrajectorySequence preload3 = drive.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(10, 0), Math.toRadians(0))
-                .splineTo(new Vector2d(25, -4), Math.toRadians(-60))
-                .waitSeconds(0.1)
-                .setReversed(true)
-                .lineToLinearHeading(new Pose2d(34.5, 40, Math.toRadians(-95)))
+                .splineTo(new Vector2d(48.5, -20), Math.toRadians(-94))
                 .build();
 
         //cycles
@@ -398,8 +419,6 @@ public class NewStatesAuto extends LinearOpMode {
                 .splineTo(new Vector2d(40, 40), Math.toRadians(-235))
                 .build();
 
-
-
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -453,7 +472,7 @@ public class NewStatesAuto extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        state = PRELOAD_YELLOW;
+        state = stack5;
         timer.reset();
 
         while (opModeIsActive() && !isStopRequested()) {
@@ -464,12 +483,151 @@ public class NewStatesAuto extends LinearOpMode {
             wrist.setPosition(wristpos);
             flip1.setPosition(flip1pos);
             flip2.setPosition(1-flip1pos);
+            claw1.setPosition(claw2pos);
+            claw2.setPosition(claw1pos);
 
-
-            claw1.setPosition(claw1pos);
-            claw2.setPosition(claw2pos);
 
             switch(state){
+
+                case stack5:
+                    servoPosition = servointake5pos;
+                    panpos = 0.47;
+                    Otarget = -25;
+                    flip1pos = 0.26;
+                    wristpos = 0.87;
+                    claw1pos = 0.4;
+                    claw2pos = 0.6;
+                    if(timer.seconds() > 0.5){
+                        intakePower = -1;
+                        Ltarget = intakeextendposition;
+                        intake1 = intSensor2.isPressed();
+                        intake2 = intSensor1.isPressed();
+                        if((intake1 || intake2)) {
+                            intake1 = false;
+                            intake2 = false;
+                            timer.reset();
+                            state = inter5;
+                        }
+
+                    }
+                    break;
+
+                case inter5:
+                    Ltarget = intakeretractposition;
+                    servoPosition = servointake4pos;
+                    intake1 = intSensor2.isPressed();
+                    intake2 = intSensor1.isPressed();
+                    if(timer.seconds() > 0.25){
+                        timer.reset();
+                        state = stack4;
+                    }
+                    break;
+
+                case stack4:
+                    servoPosition = servointake4pos;
+                    if(timer.seconds() > 0.5){
+                        intakePower = -1;
+                        Ltarget = intakeextendposition;
+                        intake1 = intSensor2.isPressed();
+                        intake2 = intSensor1.isPressed();
+                        if((intake1 && intake2)) {
+                            intake1 = false;
+                            intake2 = false;
+                            timer.reset();
+                            state = inter4;
+                        }
+
+                    }
+                    break;
+
+                case inter4:
+                    Ltarget = -50;
+                        //transfer
+                    if(timer.seconds() > 1){
+                        timer.reset();
+                        counter = 0;
+                        state = CYCLE1_TRANSFER1;
+                    }
+                    break;
+
+                case stack3:
+                    if(timer.seconds() > 0.2){
+                        flip1pos = 0.5;
+                    }
+                    if(timer.seconds() > 0.35){
+                        panpos = 0.7;
+                    }
+                    if(timer.seconds() > 0.5){
+                        claw1pos = 0.4;
+                        claw2pos = 0.6;
+                    }
+                    servoPosition = servointake3pos;
+                    if(timer.seconds() > 0.75){
+                        panpos = 0.47;
+                        intakePower = -1;
+                        Ltarget = intakeextendposition;
+                        intake1 = intSensor2.isPressed();
+                        intake2 = intSensor1.isPressed();
+                        if(intake1 && intake2){
+                            //Transfer Automatically
+                        }
+                        if((intake1 || intake2)) {
+                            intake1 = false;
+                            intake2 = false;
+                            timer.reset();
+                            state = inter3;
+                        }
+
+                    }
+                    break;
+
+                case inter3:
+                    Ltarget = intakeretractposition;
+                    servoPosition = servointake4pos;
+                    intake1 = intSensor2.isPressed();
+                    intake2 = intSensor1.isPressed();
+                    if(timer.seconds() > 0.25){
+                        flip1pos = 0.26;
+                        timer.reset();
+                        state = stack2;
+                    }
+                    break;
+
+                case stack2:
+                    if(timer.seconds() > 0.5){
+                        intakePower = -1;
+                        servoPosition = servointake2pos;
+                        Ltarget = intakeextendposition;
+                        intake1 = intSensor2.isPressed();
+                        intake2 = intSensor1.isPressed();
+                        if((intake1 && intake2)) {
+                            servoPosition = servointake4pos;
+                            intake1 = false;
+                            intake2 = false;
+                            timer.reset();
+                            state = inter2;
+                        }
+
+                    }
+                    break;
+
+                case inter2:
+                    if(timer.seconds() < 0.1){
+                        intakePower = 0.25;
+                    }else{
+                        intakePower = -0.5;
+                    }
+                    if(timer.seconds() > 0){
+                        Otarget = -25;
+                        Ltarget = -50;
+                    }
+                    if (timer.seconds() > 1) {
+                        counter = 1;
+                        timer.reset();
+                        state = CYCLE1_TRANSFER1;
+                    }
+                    break;
+
                 case PRELOAD_YELLOW:
                     servoPosition = servohold;
                     panpos = 0.47;
@@ -636,7 +794,8 @@ public class NewStatesAuto extends LinearOpMode {
                     break;
 
                 case CYCLE1_TRANSFER1:
-                    if(timer.seconds() > 0.25){
+                    intakePower = -0.5;
+                    if(timer.seconds() > 0.5){
                         flip = transferflip;
                         timer.reset();
                         state = CYCLE1_TRANSFER1_5;
@@ -645,6 +804,7 @@ public class NewStatesAuto extends LinearOpMode {
 
                 case CYCLE1_TRANSFER1_5:
                     if(timer.seconds() > 0.9){
+                        Otarget = 35;
                         claw1pos = 0.9;
                         claw2pos = 0.1;
                         timer.reset();
@@ -654,11 +814,16 @@ public class NewStatesAuto extends LinearOpMode {
 
                 case CYCLE1_TRANSFER2:
                     if(timer.seconds() > 0.5){
-                        latch.setPosition(0.3);
                         servoPosition = servointake3pos;
                         flip = intake3flip;
                         timer.reset();
-                        state = CYCLE1_TRANSFER3;
+                        if(counter == 0){
+                            state = stack3;
+                        }
+                        if(counter == 1){
+                            state = stack1;
+                        }
+                        //here
                     }
                     break;
 
@@ -1036,6 +1201,8 @@ public class NewStatesAuto extends LinearOpMode {
 
             outtakeMotor.setPower(Opower);
 
+            Telemetry telemetry = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
+            telemetry.update();
 
             switch (flip) {
                 case initializeflip:
