@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.Teleop;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.servointake1pos;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.servointake2pos;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.servointake3pos;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.servointake4pos;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto.servointake5pos;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.servointake1pos;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.servointake2pos;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.servointake3pos;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.servointake4pos;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.servointake5pos;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.flip.betweenflip;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.flip.initializeflip;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.flip.intake1flip;
@@ -250,6 +250,7 @@ public class NewTeleop3 extends OpMode {
     public static double flip1pos = 0.26;
     public static double servoPosition;
     public static double climbservoPosition = 0.55;
+    public static double pposadd = -0.07;
 
     public Servo flip1;
     public Servo latch;
@@ -328,7 +329,6 @@ public class NewTeleop3 extends OpMode {
         switchservo.setPosition(0.35);
         latch.setPosition(0.7);
         airplane.setPosition(0.5);
-//        generateMotionProfile(pivot1.getPosition(), pivot1.getPosition(), 15, 15);
 
 
     }
@@ -343,6 +343,10 @@ public class NewTeleop3 extends OpMode {
 
     @Override
     public void loop(){
+
+        double currentHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        double angle = Math.toDegrees(currentHeading);
+
         double max;
         double axial   = -gamepad1.left_stick_y * slowmode;
         double lateral =  gamepad1.left_stick_x * slowmode * strafeslowmode;
@@ -662,7 +666,6 @@ public class NewTeleop3 extends OpMode {
                     strafeslowmode = 1;
                 }
 
-
                 //horizonal = 0.53
                 //vertical left = 0.17
                 //diagonal left = 0.35
@@ -679,6 +682,7 @@ public class NewTeleop3 extends OpMode {
 //                else if((gamepad1.left_trigger > 0 && gamepad1.right_trigger == 0)||(gamepad2.left_trigger > 0 && gamepad2.right_trigger == 0)){
 //                    wristpos = 0.17;
 //                }
+//                panpos = Range.clip(-0.00603*(angle)+pposadd, 0.22, 0.72);
                 if((gamepad1.left_bumper||gamepad2.left_bumper) && timer.seconds() > 0.5){
                     left = true;
                     claw1pos = 0.4;
@@ -696,6 +700,7 @@ public class NewTeleop3 extends OpMode {
 
             case deposit:
                 wbool1 = false;
+                panpos = 0.47;
                 wristposition = horizontal;
                 if(timer.seconds() > 0.5){
                     wbool1 = false;

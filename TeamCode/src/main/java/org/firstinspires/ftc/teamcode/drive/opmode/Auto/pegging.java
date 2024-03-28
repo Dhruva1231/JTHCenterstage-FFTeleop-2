@@ -44,12 +44,26 @@ import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.int
 import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.inter4;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.inter5;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload1;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload10;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload11;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload12;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload13;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload14;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload15;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload16;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload17;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload18;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload19;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload20;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload3;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload4;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload5;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload55;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload6;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload7;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload8;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.newpreload9;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.stack1;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.stack2;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.State.stack3;
@@ -148,6 +162,20 @@ public class pegging extends LinearOpMode {
         newpreload5,
         newpreload55,
         newpreload6,
+        newpreload7,
+        newpreload8,
+        newpreload9,
+        newpreload10,
+        newpreload11,
+        newpreload12,
+        newpreload13,
+        newpreload14,
+        newpreload15,
+        newpreload16,
+        newpreload17,
+        newpreload18,
+        newpreload19,
+        newpreload20,
         stack5,
         inter5,
         stack4,
@@ -237,6 +265,10 @@ public class pegging extends LinearOpMode {
     private Servo claw2;
     private Servo latch;
 
+    public static boolean intakepreload = false;
+    public static boolean intakecycle1 = false;
+    public static boolean intakecycle2 = false;
+
     public static double pivotpos;
     public static double flip1pos = 0.5;
     public static double wristpos = 0.87;
@@ -301,7 +333,15 @@ public class pegging extends LinearOpMode {
         pivot2.setPosition(1-0.65);
 
         TrajectorySequence preload1 = drive.trajectorySequenceBuilder(startPose)
-                .splineToLinearHeading(new Pose2d(37, -3.5, Math.toRadians(-72)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(37, -3.5, Math.toRadians(-71.5)), Math.toRadians(0))
+                .addSpatialMarker(new Vector2d(36, -3), () -> {
+                    intakepreload = true;
+                    // This marker runs at the point that gets
+                    // closest to the (20, 20) coordinate
+
+                    // Run your action in here!
+                })
+
                 .build();
 
 
@@ -317,44 +357,60 @@ public class pegging extends LinearOpMode {
         //cycles
         TrajectorySequence preload2_v1_5 = drive.trajectorySequenceBuilder(preload1.end())
                 .splineToLinearHeading(new Pose2d(50, -4, Math.toRadians(-90)), Math.toRadians(0))
-                .waitSeconds(0.1)
+                .waitSeconds(0.01)
                 .setReversed(true)
-                .splineTo(new Vector2d(50, 60), Math.toRadians(95))
-                .splineTo(new Vector2d(46, 88), Math.toRadians(-235))
+                .splineTo(new Vector2d(50, 50), Math.toRadians(95))
+                .splineToConstantHeading(new Vector2d(23, 84.75), Math.toRadians(95))
                 .build();
 
         TrajectorySequence deposit_v1 = drive.trajectorySequenceBuilder(preload2_v1_5.end())
-                .setReversed(true)
-                .splineTo(new Vector2d(48, 18), Math.toRadians(93))
-                .splineTo(new Vector2d(42, 40), Math.toRadians(-235))
+                .setReversed(false)
+                .splineToLinearHeading(new Pose2d(22, 83, Math.toRadians(-90)), Math.toRadians(0))
                 .build();
 
         TrajectorySequence cycle2_v1 = drive.trajectorySequenceBuilder(deposit_v1.end())
-                .setReversed(false)
-                .splineTo(new Vector2d(47.5, 18), Math.toRadians(-93))
-                .splineTo(new Vector2d(47.5, -20), Math.toRadians(-93))
+                /*.splineTo(new Vector2d(48.5, 60), Math.toRadians(-92))
+                .splineTo(new Vector2d(48.5, 23), Math.toRadians(-92))
+                .splineTo(new Vector2d(48.5, 15), Math.toRadians(-92))*/
+                .lineToLinearHeading(new Pose2d(48, 60, Math.toRadians(-93)))
+                .lineToLinearHeading(new Pose2d(48, 15, Math.toRadians(-93)))
+
+                .addSpatialMarker(new Vector2d(48, 19), () -> {
+                    intakecycle1 = true;
+                    // This marker runs at the point that gets
+                    // closest to the (20, 20) coordinate
+
+                    // Run your action in here!
+                })
+
                 .build();
 
 
         TrajectorySequence deposit_v1_2 = drive.trajectorySequenceBuilder(cycle2_v1.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(46, 18), Math.toRadians(95))
-                .splineTo(new Vector2d(41, 40), Math.toRadians(-235))
+                .splineTo(new Vector2d(50, 50), Math.toRadians(95))
+                .splineTo(new Vector2d(44.5, 87.5), Math.toRadians(-235))
                 .build();
 
 
         TrajectorySequence cycle3_v1 = drive.trajectorySequenceBuilder(deposit_v1_2.end())
                 .setReversed(false)
-                .splineTo(new Vector2d(47, 18), Math.toRadians(-95))
-                .splineTo(new Vector2d(47, -10), Math.toRadians(-95))
-                .splineTo(new Vector2d(47, -22.5), Math.toRadians(-105))
+                .splineTo(new Vector2d(46.5, 60), Math.toRadians(-93))
+                .splineTo(new Vector2d(46.5, 23), Math.toRadians(-93))
+                .splineTo(new Vector2d(46.5, 15), Math.toRadians(-93))
+                .addSpatialMarker(new Vector2d(46.5, 18), () -> {
+                    intakecycle2 = true;
+                    // This marker runs at the point that gets
+                    // closest to the (20, 20) coordinate
+
+                    // Run your action in here!
+                })
                 .build();
 
         TrajectorySequence deposit_v1_3 = drive.trajectorySequenceBuilder(cycle3_v1.end())
                 .setReversed(true)
-                .turn(Math.toRadians(16.5))
-                .splineTo(new Vector2d(46, 18), Math.toRadians(95))
-                .splineTo(new Vector2d(40, 40), Math.toRadians(-235))
+                .splineTo(new Vector2d(50, 50), Math.toRadians(95))
+                .splineTo(new Vector2d(44.5, 87.5), Math.toRadians(-235))
                 .build();
 
 
@@ -496,6 +552,8 @@ public class pegging extends LinearOpMode {
         state = newpreload1;
         timer.reset();
 
+        intakepreload = false;
+
         while (opModeIsActive() && !isStopRequested()) {
             pivot1.setPosition(servoPosition);
             pivot2.setPosition(1-servoPosition);
@@ -518,21 +576,21 @@ public class pegging extends LinearOpMode {
                     break;
 
                 case newpreload2:
-                    if(timer.seconds() > 0.5){
+                    if(timer.seconds() > 0.25){
                         servoPosition = servointake5pos;
                         Otarget = 150;
                     }
-                    if(timer.seconds() > 0.75){
+                    if(timer.seconds() > 0.35){
                         flip1pos = 1;
                     }
-                    if(!drive.isBusy() && timer.seconds() > 0.9){
+                    if(intakepreload){
                         timer.reset();
                         state = newpreload3;
                     }
                     break;
 
                 case newpreload3:
-                    if(timer.seconds() > 0.25){
+                    if(timer.seconds() > 0){
                         claw1pos = 0.4;
                         claw2pos = 0.6;
                         intakePower = -1;
@@ -543,14 +601,14 @@ public class pegging extends LinearOpMode {
                     break;
 
                 case newpreload4:
-                    if(timer.seconds() > 0.2){
+                    if(timer.seconds() > 0.1){
                         flip1pos = 0.4;
                         Otarget = -25;
                     }
                     intake1 = intSensor2.isPressed();
                     intake2 = intSensor1.isPressed();
 
-                    if(intake1 && intake2 && timer.seconds() > 0.75){
+                    if(intake1 && intake2 && timer.seconds() > 0.15){
                         intake1 = false;
                         intake2 = false;
                         Otarget = -25;
@@ -564,7 +622,7 @@ public class pegging extends LinearOpMode {
 
                 case newpreload5:
                     flip1pos = 0.26;
-                    if(Math.abs(intakeLeftExt.getCurrentPosition() - Ltarget) < 100 && timer.seconds() > 0.5){
+                    if(Math.abs(intakeLeftExt.getCurrentPosition() - Ltarget) < 100){
                         drive.followTrajectorySequenceAsync(preload2_v1_5);
                         timer.reset();
                         counter = 5;
@@ -574,39 +632,85 @@ public class pegging extends LinearOpMode {
 
 
                 case newpreload55:
-                    if(timer.seconds() > 1){
+                    if(timer.seconds() > 0.5){
                         timer.reset();
                         counter = 5;
                         state = CYCLE1_TRANSFER1;
                     }
                     break;
 
-
                 case newpreload6:
                     if(timer.seconds() > 1){
-                        Otarget = 400;
                         flip1pos = 0.81;
                     }
 
-                    if(timer.seconds() > 1.5){
-                        panpos = 0.6;
+                    if(timer.seconds() > 1.25){
+                        wristpos = 0.53;
                     }
 
-                    if(!drive.isBusy() && timer.seconds() > 2){
+                    if(!drive.isBusy() && timer.seconds() > 1.25){
                         claw1pos = 0.4;
                         claw2pos = 0.6;
+                        timer.reset();
+                        state = newpreload9;
+                    }
+                    break;
+
+                case newpreload7:
+                    if(timer.seconds() > 0.1){
+                        panpos = 0.47;
+                        drive.followTrajectorySequenceAsync(deposit_v1);
+                        timer.reset();
+                        state = newpreload8;
+                    }
+                    break;
+
+                case newpreload8:
+                    if(!drive.isBusy()){
+                        claw2pos = 0.6;
+                        timer.reset();
+                        state = newpreload9;
+                    }
+                    break;
+
+                case newpreload9:
+                    if(timer.seconds() > 0.15){
+                        drive.followTrajectorySequenceAsync(cycle2_v1);
+                        timer.reset();
+                        state = newpreload10;
+                    }
+                    break;
+
+                case newpreload10:
+                    //copy
+                    if(timer.seconds() > 0.35){
+                        Otarget = -25;
+                        flip1pos = 0.4;
+                        timer.reset();
+                        state = newpreload11;
+                    }
+                    break;
+
+                case newpreload11:
+                    if(timer.seconds() > 0.3){
+                        flip1pos = 0.26;
+                        wristpos = 0.87;
+                    }
+                    if(intakecycle1 && timer.seconds() > 0.35){
+                        timer.reset();
+                        state = stack5;
                     }
                     break;
 
                 case stack5:
-                    /*servoPosition = servointake5pos;
+                    servoPosition = servointake4pos;
                     panpos = 0.47;
                     Otarget = -25;
                     flip1pos = 0.26;
                     wristpos = 0.87;
                     claw1pos = 0.4;
                     claw2pos = 0.6;
-                    if(timer.seconds() > 0.5){
+                    if(timer.seconds() > 0){
                         intakePower = -1;
                         Ltarget = intakeextendposition;
                         intake1 = intSensor2.isPressed();
@@ -618,31 +722,29 @@ public class pegging extends LinearOpMode {
                             state = inter5;
                         }
 
-                    }*/
-                    drive.followTrajectorySequenceAsync(preload1);
-                    timer.reset();
-                    state = inter5;
+                    }
                     break;
 
                 case inter5:
-//                    Ltarget = intakeretractposition;
-//                    servoPosition = servointake4pos;
-//                    intake1 = intSensor2.isPressed();
-//                    intake2 = intSensor1.isPressed();
-//                    if(timer.seconds() > 0.25){
-//                        timer.reset();
-//                        state = stack4;
-//                    }
+                    Ltarget = intakeretractposition;
+                    servoPosition = servointake3pos;
+                    intake1 = intSensor2.isPressed();
+                    intake2 = intSensor1.isPressed();
+                    if(timer.seconds() > 0.25){
+                        timer.reset();
+                        state = stack4;
+                    }
                     break;
 
                 case stack4:
-                    servoPosition = servointake4pos;
+                    servoPosition = servointake3pos;
                     if(timer.seconds() > 0.5){
                         intakePower = -1;
                         Ltarget = intakeextendposition;
                         intake1 = intSensor2.isPressed();
                         intake2 = intSensor1.isPressed();
                         if((intake1 && intake2)) {
+                            drive.followTrajectorySequenceAsync(deposit_v1_2);
                             intake1 = false;
                             intake2 = false;
                             timer.reset();
@@ -655,7 +757,7 @@ public class pegging extends LinearOpMode {
                 case inter4:
                     Ltarget = -50;
                     //transfer
-                    if(timer.seconds() > 1){
+                    if(timer.seconds() > 0.5){
                         timer.reset();
                         counter = 0;
                         state = CYCLE1_TRANSFER1;
@@ -663,47 +765,135 @@ public class pegging extends LinearOpMode {
                     break;
 
                 case stack3:
-                    if(timer.seconds() > 0.2){
-                        flip1pos = 0.5;
-                    }
-                    if(timer.seconds() > 0.35){
-                        panpos = 0.7;
-                    }
-                    if(timer.seconds() > 0.5){
-                        claw1pos = 0.4;
-                        claw2pos = 0.6;
-                    }
-                    servoPosition = servointake3pos;
-                    if(timer.seconds() > 0.75){
-                        panpos = 0.47;
-                        intakePower = -1;
-                        Ltarget = intakeextendposition;
-                        intake1 = intSensor2.isPressed();
-                        intake2 = intSensor1.isPressed();
-                        if(intake1 && intake2){
-                            //Transfer Automatically
-                        }
-                        if((intake1 || intake2)) {
-                            intake1 = false;
-                            intake2 = false;
-                            timer.reset();
-                            state = inter3;
-                        }
-
+                    if(timer.seconds() > 0){
+                        timer.reset();
+                        state = inter3;
                     }
                     break;
 
                 case inter3:
+                    if(timer.seconds()>0){
+                        Otarget = 700;
+                        flip1pos = .81;
+                    }
+                    if(timer.seconds()>0.1){
+                        panpos = 0.6;
+                    }
+                    if(!drive.isBusy()&&timer.seconds()>0.15){
+                        claw1pos = 0.4;
+                        claw2pos = 0.6;
+                        timer.reset();
+                        state = newpreload12;
+                    }
+                    break;
+
+                case newpreload12:
+                    if(timer.seconds() > 0.35){
+                        drive.followTrajectorySequenceAsync(cycle3_v1);
+                        Otarget = -25;
+                        flip1pos = 0.4;
+                        timer.reset();
+                        state = newpreload13;
+                    }
+                    break;
+
+                case newpreload13:
+                    if(timer.seconds() > 0.3){
+                        flip1pos = 0.26;
+                    }
+                    if(intakecycle2 && timer.seconds() > 0.4){
+                        timer.reset();
+                        state = newpreload14;
+                    }
+                    break;
+
+                case newpreload14:
+                    servoPosition = servointake2pos;
+                    panpos = 0.47;
+                    Otarget = -25;
+                    flip1pos = 0.26;
+                    wristpos = 0.87;
+                    claw1pos = 0.4;
+                    claw2pos = 0.6;
+                    if(timer.seconds() > 0){
+                        intakePower = -1;
+                        Ltarget = intakeextendposition;
+                        intake1 = intSensor2.isPressed();
+                        intake2 = intSensor1.isPressed();
+                        if((intake1 || intake2)) {
+                            intake1 = false;
+                            intake2 = false;
+                            timer.reset();
+                            state = newpreload15;
+                        }
+
+                    }
+                    break;
+
+                case newpreload15:
                     Ltarget = intakeretractposition;
-                    servoPosition = servointake4pos;
+                    servoPosition = servointake3pos;
                     intake1 = intSensor2.isPressed();
                     intake2 = intSensor1.isPressed();
                     if(timer.seconds() > 0.25){
-                        flip1pos = 0.26;
                         timer.reset();
-                        state = stack2;
+                        state = newpreload16;
                     }
                     break;
+
+                case newpreload16:
+                    if(timer.seconds() > 0.5){
+                        intakePower = -1;
+                        Ltarget = intakeextendposition;
+                        if(intakeLeftExt.getCurrentPosition() > (intakeextendposition - 150)){
+                            servoPosition = servointake1pos;
+                        }
+                        intake1 = intSensor2.isPressed();
+                        intake2 = intSensor1.isPressed();
+                        if((intake1 && intake2)) {
+                            drive.followTrajectorySequenceAsync(deposit_v1_3);
+                            intake1 = false;
+                            intake2 = false;
+                            timer.reset();
+                            state = newpreload17;
+                        }
+
+                    }
+                    break;
+
+                case newpreload17:
+                    Ltarget = -50;
+                    //transfer
+                    if(timer.seconds() > 0.25){
+                        timer.reset();
+                        counter = 2;
+                        state = CYCLE1_TRANSFER1;
+                    }
+                    break;
+
+                case newpreload18:
+                    if(timer.seconds() > 0){
+                        timer.reset();
+                        state = newpreload19;
+                    }
+                    break;
+
+                case newpreload19:
+                    if(timer.seconds()>0.25){
+                        Otarget = 700;
+                        flip1pos = .81;
+                    }
+                    if(timer.seconds()>0.5){
+                        panpos = 0.6;
+                    }
+                    if(!drive.isBusy()&&timer.seconds()>0.65){
+                        claw1pos = 0.4;
+                        claw2pos = 0.6;
+                        timer.reset();
+                        state = newpreload20;
+                    }
+                    break;
+
 
                 case stack2:
                     if(timer.seconds() > 0.5){
@@ -907,7 +1097,7 @@ public class pegging extends LinearOpMode {
 
                 case CYCLE1_TRANSFER1:
                     intakePower = -0.5;
-                    if(timer.seconds() > 0.5){
+                    if(timer.seconds() > 0.4){
                         flip = transferflip;
                         timer.reset();
                         state = CYCLE1_TRANSFER1_5;
@@ -915,7 +1105,7 @@ public class pegging extends LinearOpMode {
                     break;
 
                 case CYCLE1_TRANSFER1_5:
-                    if(timer.seconds() > 0.9){
+                    if(timer.seconds() > 0.7){
                         Otarget = 35;
                         claw1pos = 0.9;
                         claw2pos = 0.1;
@@ -925,7 +1115,7 @@ public class pegging extends LinearOpMode {
                     break;
 
                 case CYCLE1_TRANSFER2:
-                    if(timer.seconds() > 0.5){
+                    if(timer.seconds() > 0.35){
                         servoPosition = servointake3pos;
                         flip = intake3flip;
                         timer.reset();
@@ -935,6 +1125,10 @@ public class pegging extends LinearOpMode {
                         if(counter == 0){
                             state = stack3;
                         }
+                        if(counter == 2){
+                            state = newpreload18;
+                        }
+
                         if(counter == 1){
                             state = stack1;
                         }
