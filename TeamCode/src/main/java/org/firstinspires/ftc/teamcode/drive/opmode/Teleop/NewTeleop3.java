@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.Teleop;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.servohold;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.servointake1pos;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.servointake2pos;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging.servointake3pos;
@@ -23,6 +24,15 @@ import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.stat
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.cancelinter1;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.cancelinter2;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.deposit;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.hang1;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.hang2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.hang3;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.hang4;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.hang5;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.hang6;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.hang7;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.hang8;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.hang9;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.idle;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.initialization1;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.initialization2;
@@ -74,6 +84,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.drive.opmode.Auto.NewStatesAuto;
+import org.firstinspires.ftc.teamcode.drive.opmode.Auto.pegging;
 
 @Config
 @TeleOp(name="Blue Teleop")
@@ -226,6 +237,16 @@ public class NewTeleop3 extends OpMode {
         retardintake2,
         retardintake3,
         retardintake4,
+        hang1,
+        hang2,
+        hang3,
+        hang4,
+        hang5,
+        hang6,
+        hang7,
+        hang8,
+        hang9
+
     }
 
     public TouchSensor intSensor1;
@@ -240,6 +261,7 @@ public class NewTeleop3 extends OpMode {
     state New = initialization1;
     stackpos stackposition = normal;
     ElapsedTime timer  = new ElapsedTime();
+    ElapsedTime planetimer  = new ElapsedTime();
     ElapsedTime wristtimer  = new ElapsedTime();
     ElapsedTime holdtimer  = new ElapsedTime();
     ElapsedTime holdtimer2  = new ElapsedTime();
@@ -265,7 +287,7 @@ public class NewTeleop3 extends OpMode {
     public static double Hp = 0.03;
     public static double one = 0.35;
     public static double two = 0.3;
-    public static double plane = 0.5;
+    public static double plane = 0.45;
 
     public static double slowmode = 1;
     public static double strafeslowmode = 1;
@@ -287,7 +309,9 @@ public class NewTeleop3 extends OpMode {
 
         intakeLeftExt = hardwareMap.get(DcMotorEx.class, "22");
         intakeRightExt = hardwareMap.get(DcMotorEx.class, "1");
+
         switchservo = hardwareMap.get(Servo.class, "switch");
+        //switch is 5ss
 
         intakeMotor = hardwareMap.get(DcMotorEx.class, "0");
         outtakeMotor = hardwareMap.get(DcMotorEx.class, "33");
@@ -300,13 +324,13 @@ public class NewTeleop3 extends OpMode {
         pivot2 = hardwareMap.get(Servo.class, "0ss");
         flip1 = hardwareMap.get(Servo.class, "4s");
         flip2 = hardwareMap.get(Servo.class, "5s");
-        airplane = hardwareMap.get(Servo.class, "3ss");
+        airplane = hardwareMap.get(Servo.class, "2s");
 
         wrist = hardwareMap.get(Servo.class, "4ss");
         claw1 = hardwareMap.get(Servo.class, "0s");
         claw2 = hardwareMap.get(Servo.class, "1s");
         pan = hardwareMap.get(Servo.class, "2ss");
-        climb = hardwareMap.get(Servo.class, "2s");
+        climb = hardwareMap.get(Servo.class, "3ss");
 
         intakeLeftExt.setDirection(DcMotorSimple.Direction.REVERSE);
         outtakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -325,6 +349,7 @@ public class NewTeleop3 extends OpMode {
         leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        //plane launcher 0.45, 0.58
 
         switchservo.setPosition(0.35);
         latch.setPosition(0.7);
@@ -337,6 +362,7 @@ public class NewTeleop3 extends OpMode {
     public void start() {
         startTime = getRuntime();
         timer.reset();
+        planetimer.reset();
         wristtimer.reset();
         // Get the current time
     }
@@ -649,16 +675,16 @@ public class NewTeleop3 extends OpMode {
                 break;
 
             case barrierinter:
-                if(Otarget > 600 && gamepad2.cross){
-                    plane = 0.12;
-                }
-
-                int lstickpos2 = (int) (15 * gamepad2.right_stick_y);
-
-                if(gamepad2.right_stick_y != 0){
-                    Otarget = Otarget - lstickpos2;
-                }
-
+//                if(Otarget > 600 && gamepad2.cross){
+//                    plane = 0.12;
+//                }
+//
+//                int lstickpos2 = (int) (15 * gamepad2.right_stick_y);
+//
+//                if(gamepad2.right_stick_y != 0){
+//                    Otarget = Otarget - lstickpos2;
+//                }
+//
 
                 if(gamepad2.dpad_left){
                     strafeslowmode = 0.6;
@@ -732,11 +758,89 @@ public class NewTeleop3 extends OpMode {
             case specialsensor:
 
                 break;
+//
+            case hang1:
+                flip1pos = 0.81;
+                intakePower = 0;
+                servoPosition = 0.7;
+                Otarget = -25;
+                Ltarget = -50;
+                if(timer.seconds() > 0.25){
+                    timer.reset();
+                    New = hang2;
+                }
+                break;
+
+            case hang2:
+                if(timer.seconds() > 0.25 && Math.abs(outtakeMotor.getCurrentPosition()) < 25){
+//                    latch.setPosition(0.3);
+                    two = 0.7;
+                    climbservoPosition = 0.1;
+                    timer.reset();
+                    New = hang3;
+                }
+                break;
+
+            case hang3:
+                if(timer.seconds() > 0.75){
+                    Otarget = 790;
+                    timer.reset();
+                    New = hang4;
+                }
+                break;
+
+            case hang4:
+                if(gamepad2.cross){
+                    Op = 0;
+                    Oi = 0;
+                    Od = 0;
+                    one = 0.92; //tentative, change
+                    timer.reset();
+                    New = hang5;
+                }
+                break;
+
+            case hang5:
+                if(timer.seconds() > 0.5 && gamepad2.square){
+                    Ltarget = -5000;
+                    timer.reset();
+                    New = hang6;
+                }
+                break;
+
+            case hang6:
+                if(timer.seconds() > 1.5 && gamepad2.square){
+                    Ltarget = -6500;
+                    timer.reset();
+                    New = hang7;
+                }
+                break;
+
+            case hang7:
+                if(timer.seconds() > 1.5 && gamepad2.square) {
+                    Ltarget = -7500;
+                    timer.reset();
+                    New = hang8;
+                }
+                break;
+
+
+            case hang8:
+                if(timer.seconds() > 1.5 && gamepad2.square) {
+                    Ltarget = -8500;
+                    timer.reset();
+                    New = hang9;
+                }
+                break;
+        }
+
+        if(gamepad1.triangle && gamepad1.circle){
+            plane = 0.6;
         }
 
 
-        if(gamepad1.triangle){
-            New = cancel;
+        if(gamepad2.dpad_left && gamepad2.dpad_up){
+            New = hang1;
         }
 
         Lcontroller.setPID(Lp, Li, Ld);
