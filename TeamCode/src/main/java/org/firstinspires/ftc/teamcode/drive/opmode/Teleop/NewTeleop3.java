@@ -24,6 +24,8 @@ import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.stat
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.cancelinter1;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.cancelinter2;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.deposit;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.depositpen;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.depositpenis;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.hang1;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.hang2;
 import static org.firstinspires.ftc.teamcode.drive.opmode.Teleop.NewTeleop3.state.hang3;
@@ -94,7 +96,9 @@ public class NewTeleop3 extends OpMode {
     boolean wbool2 = false;
     boolean wbool3 = false;
     boolean wbool4 = false;
-    public static double servointakepos = 0.32;
+
+    public static double test = 0;
+    public static double servointakepos = 0.33;
     enum flip{
         initializeflip,
         intake5flip,
@@ -229,6 +233,8 @@ public class NewTeleop3 extends OpMode {
         barrierpreinter,
         barrierinter,
         redo,
+        depositpen,
+        depositpenis,
         deposit,
         shoot,
         idle,
@@ -261,6 +267,7 @@ public class NewTeleop3 extends OpMode {
     state New = initialization1;
     stackpos stackposition = normal;
     ElapsedTime timer  = new ElapsedTime();
+    ElapsedTime freaktimer  = new ElapsedTime();
     ElapsedTime planetimer  = new ElapsedTime();
     ElapsedTime wristtimer  = new ElapsedTime();
     ElapsedTime holdtimer  = new ElapsedTime();
@@ -272,7 +279,8 @@ public class NewTeleop3 extends OpMode {
     public static double flip1pos = 0.26;
     public static double servoPosition;
     public static double climbservoPosition = 0.55;
-    public static double pposadd = -0.07;
+    public static double pposadd = -1;
+    public static double newppos = 0.00603;
 
     public Servo flip1;
     public Servo latch;
@@ -288,6 +296,7 @@ public class NewTeleop3 extends OpMode {
     public static double one = 0.35;
     public static double two = 0.3;
     public static double plane = 0.45;
+    public static double panpositioncalc = 0.45;
 
     public static double slowmode = 1;
     public static double strafeslowmode = 1;
@@ -362,6 +371,7 @@ public class NewTeleop3 extends OpMode {
     public void start() {
         startTime = getRuntime();
         timer.reset();
+        freaktimer.reset();
         planetimer.reset();
         wristtimer.reset();
         // Get the current time
@@ -397,7 +407,7 @@ public class NewTeleop3 extends OpMode {
 
         switchservo.setPosition(one);
 
-        latch.setPosition(two);
+//        latch.setPosition(two);
         leftFrontDrive.setPower(leftFrontPower);
         rightFrontDrive.setPower(rightFrontPower);
         leftBackDrive.setPower(leftBackPower);
@@ -440,7 +450,7 @@ public class NewTeleop3 extends OpMode {
                     timer.reset();
                     New = cancelinter1;
                 }else{
-//                    latch.setPosition(0.7);
+                    latch.setPosition(0.7);
                     Otarget = 10;
                     timer.reset();
                     New = base;
@@ -470,9 +480,9 @@ public class NewTeleop3 extends OpMode {
                 //move to intake
                 flip1pos = 0.26;
                 if(counter == 0){
-                    flip = intakeflip;
+                    servoPosition = 0.8;
                 }else{
-                    flip = intake1flip;
+                    servoPosition = 0.8;
                 }
                 timer.reset();
                 New = initialize;
@@ -489,22 +499,29 @@ public class NewTeleop3 extends OpMode {
                 break;
 
             case intake:
-                if(gamepad1.right_trigger > 0 && !onOff2 && holdtimer2.seconds() > 0.5){
+//                if(gamepad1.right_trigger > 0 && !onOff2 && holdtimer2.seconds() > 0.5){
 //                    latch.setPosition(0.3);
-                    holdtimer2.reset();
-                    onOff2 = true;
-                    extendInt = true;
-                    Ltarget = 600;
-                    intakePower = 0;
-                }else if(gamepad1.right_trigger > 0 && onOff2 && holdtimer2.seconds() > 0.5){
-//                    latch.setPosition(0.3);
-                    holdtimer2.reset();
-                    servoPosition = servointakepos;
-//                    generateMotionProfile(pivot1.getPosition(), servointakepos, maxvel1, maxaccel1);
-                    intakePower = 0;
-                    onOff2 = false;
-                    Ltarget = 0;
-                }
+//                    holdtimer2.reset();
+//                    onOff2 = true;
+//                    extendInt = true;
+//                    intakePower = 0;
+//                }else if(gamepad1.right_trigger > 0 && onOff2 && holdtimer2.seconds() > 0.5){
+//                    freaktimer.reset();
+//                    holdtimer2.reset();
+//                    servoPosition = servointakepos;
+////                    generateMotionProfile(pivot1.getPosition(), servointakepos, maxvel1, maxaccel1);
+//                    intakePower = 0;
+//                    onOff2 = false;
+//                    Ltarget = 0;
+//                }
+//
+//                if(onOff2 && freaktimer.seconds() > 1){
+//                    Ltarget = 600;
+//                }
+//                if(freaktimer.seconds() > 1 && !onOff){
+//                    latch.setPosition(0.7);
+//                }
+
 
                 if(gamepad2.dpad_up){
                     servoPosition = servointake5pos;
@@ -541,7 +558,7 @@ public class NewTeleop3 extends OpMode {
                     holdtimer.reset();
                     onOff = false;
                     intakePower = 0;
-                    servoPosition = servointake1pos;
+                    servoPosition = 0.7;
 //                    generateMotionProfile(pivot1.getPosition(), servointake1pos, maxvel1, maxaccel1);
                 }else if(gamepad1.left_bumper){
                     holdtimer.reset();
@@ -599,7 +616,7 @@ public class NewTeleop3 extends OpMode {
                     Ltarget = -50;
                 }
                 if(timer.seconds() > time4){
-//                    latch.setPosition(0.7);
+                    latch.setPosition(0.7);
                     timer.reset();
                     New = transfer;
                 }
@@ -622,7 +639,7 @@ public class NewTeleop3 extends OpMode {
                 if(timer.seconds() > 0){
                     Otarget = 35;
                     claw1pos = 0.9;
-                    claw2pos = 0.1;
+                    claw2pos = 0;
                     timer.reset();
                     New = outtakepre;
                 }
@@ -641,7 +658,7 @@ public class NewTeleop3 extends OpMode {
                 if(timer.seconds() > 0.49){
                     if(intSensor2.isPressed() && intSensor1.isPressed()){
                         timer.reset();
-                        flip = intakeflip;
+                        servoPosition = 0.8;
                         //fix claw pos
                         claw1pos = 0.4;
                         claw2pos = 0.6;
@@ -675,15 +692,15 @@ public class NewTeleop3 extends OpMode {
                 break;
 
             case barrierinter:
-//                if(Otarget > 600 && gamepad2.cross){
-//                    plane = 0.12;
-//                }
-//
-//                int lstickpos2 = (int) (15 * gamepad2.right_stick_y);
-//
-//                if(gamepad2.right_stick_y != 0){
-//                    Otarget = Otarget - lstickpos2;
-//                }
+                if(Otarget > 600 && gamepad2.cross){
+                    plane = 0.12;
+                }
+
+                int lstickpos2 = (int) (15 * gamepad2.right_stick_y);
+
+                if(gamepad2.right_stick_y != 0){
+                    Otarget = Otarget - lstickpos2;
+                }
 //
 
                 if(gamepad2.dpad_left){
@@ -708,7 +725,19 @@ public class NewTeleop3 extends OpMode {
 //                else if((gamepad1.left_trigger > 0 && gamepad1.right_trigger == 0)||(gamepad2.left_trigger > 0 && gamepad2.right_trigger == 0)){
 //                    wristpos = 0.17;
 //                }
-//                panpos = Range.clip(-0.00603*(angle)+pposadd, 0.22, 0.72);
+//                panpos = Range.clip(newppos*(angle)-pposadd, 0.22, 0.72);
+//                panpositioncalc = 154.889+6.259918*angle+0.09498276*(Math.pow(angle, 2))+0.0006390602*Math.pow(angle, 3)+0.000001607809*Math.pow(angle, 4);
+                panpositioncalc = -90.67756-5.256742*angle-0.1199626*Math.pow(angle, 2)-0.001355961*Math.pow(angle, 3)-0.000007597125*Math.pow(angle, 4)-1.68825*Math.pow(10, -8)*Math.pow(angle, 5);
+//                if(angle < -90 && angle > -112){
+//                    panpos = Range.clip(panpositioncalc, 0.395, 0.47);
+//                }else if(angle > -90 && angle < -70){
+//                    panpos = Range.clip(panpositioncalc + (0.47 - panpositioncalc), 0.47, 0.54);
+//                }else{
+//                    panpos = 0.47;
+//                }
+
+                panpos = Range.clip(panpositioncalc, 0.395, 0.54);
+
                 if((gamepad1.left_bumper||gamepad2.left_bumper) && timer.seconds() > 0.5){
                     left = true;
                     claw1pos = 0.4;
@@ -719,16 +748,37 @@ public class NewTeleop3 extends OpMode {
                 }
                 if(left && right){
                     timer.reset();
+                    New = depositpen;
+                }
+
+                break;
+
+
+            case depositpen:
+                if(timer.seconds() > 0){
+                    flip1pos = 0.83;
+                    timer.reset();
+                    New = depositpenis;
+                }
+                break;
+
+            case depositpenis:
+                if(timer.seconds() > 0.3){
+                    flip1pos = 0.81;
+                }
+                if(timer.seconds() > 0.31 && (gamepad2.cross || gamepad1.cross)){
+                    timer.reset();
                     New = deposit;
                 }
 
                 break;
 
+
             case deposit:
                 wbool1 = false;
                 panpos = 0.47;
                 wristposition = horizontal;
-                if(timer.seconds() > 0.5){
+                if(timer.seconds() > 0){
                     wbool1 = false;
                     left = false;
                     right = false;
@@ -737,13 +787,13 @@ public class NewTeleop3 extends OpMode {
                     wristpos = 0.87;
                     flip1pos = 0.35;
                 }
-                if(timer.seconds() > 0.75){
+                if(timer.seconds() > 0.15){
                     Otarget = 125;
                 }
-                if(timer.seconds() > 1){
+                if(timer.seconds() > 0.25){
                     Otarget = 50;
                 }
-                if(timer.seconds() > 1){
+                if(timer.seconds() > 0.35){
                     Otarget = -25;
                     timer.reset();
                     New = pre;
@@ -836,6 +886,8 @@ public class NewTeleop3 extends OpMode {
 
         if(gamepad1.triangle && gamepad1.circle){
             plane = 0.6;
+        }else{
+            plane = 0.45;
         }
 
 
@@ -1040,6 +1092,7 @@ public class NewTeleop3 extends OpMode {
         telemetry.addData("out", outtakeMotor.getCurrentPosition());
         telemetry.addData("intake 1 ", intSensor1.isPressed());
         telemetry.addData("intake 2", intSensor2.isPressed());
+        telemetry.addData("angles", angle);
 
         telemetry.addData("pitch", imu.getRobotYawPitchRollAngles().getPitch(AngleUnit.RADIANS));
 

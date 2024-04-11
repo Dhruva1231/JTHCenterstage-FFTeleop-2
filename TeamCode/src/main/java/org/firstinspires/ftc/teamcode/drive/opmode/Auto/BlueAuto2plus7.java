@@ -270,7 +270,7 @@ public class BlueAuto2plus7 extends LinearOpMode {
                 .splineTo(new Vector2d(25, -4), Math.toRadians(-60))
                 .waitSeconds(0.1)
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(34.5, 40, Math.toRadians(-95)))
+                .lineToLinearHeading(new Pose2d(34.5, 39, Math.toRadians(-95)))
                 .build();
 
         //cycles

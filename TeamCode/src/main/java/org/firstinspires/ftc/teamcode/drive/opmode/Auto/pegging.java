@@ -120,12 +120,19 @@ public class pegging extends LinearOpMode {
     public static double servotransferpos = 0.88;
     public static double servohold = 0.65;
     public static double flipdrive = 0.42;
-    public static double servointake5pos = 0.395;
-    public static double servointake4pos = 0.38;
-    public static double servointake3pos = 0.355;
-    public static double servointake2pos = 0.345;
-    public static double servointake1pos = 0.32;
+    public static double servointake5pos = 0.41 + 0.01; //0.41
+    public static double servointake4pos = 0.395 + 0.01; //0.395
+    public static double servointake3pos = 0.38 + 0.01; //0.38
+    public static double servointake2pos = 0.355 + 0.01; //0.355
+    public static double servointake1pos = 0.33 + 0.01;//0.33
 
+//    public static double servointake5pos = 0.395; //0.41
+//    public static double servointake4pos = 0.38; //0.395
+//    public static double servointake3pos = 0.355; //0.38
+//    public static double servointake2pos = 0.33; //0.355
+//    public static double servointake1pos = 0.32;//0.33
+
+    public static double test = 0;
     private FtcDashboard dashboard = FtcDashboard.getInstance();
 
 
@@ -246,7 +253,7 @@ public class pegging extends LinearOpMode {
     private DcMotorEx intakeRightExt;
 
 
-    public static int intakeextendposition = 930;
+    public static int intakeextendposition = 945;
     public static int intakeretractposition = 700;
     //Ltarget Max 750, Min -75
     public static int Ltarget;
@@ -401,15 +408,22 @@ public class pegging extends LinearOpMode {
 
 
         TrajectorySequence preloadinter1 = drive.trajectorySequenceBuilder(preload2_v1_5.end())
-                .lineToLinearHeading(new Pose2d(48.5, 60, Math.toRadians(-92)))
+//                .splineTo(new Vector2d(47, 60), Math.toRadians(-94.5))
+                .setReversed(false)
+                .splineTo(new Vector2d(51, 60), Math.toRadians(-90))
+//                .lineToLinearHeading(new Pose2d(47, 60, Math.toRadians(-94.5)))
                 .build();
 
         TrajectorySequence preloadinter2 = drive.trajectorySequenceBuilder(preload2_v2_5.end())
-                .lineToLinearHeading(new Pose2d(48.5, 60, Math.toRadians(-92)))
+                .setReversed(false)
+                .splineTo(new Vector2d(51, 60), Math.toRadians(-90))
+//                .lineToLinearHeading(new Pose2d(47, 60, Math.toRadians(-94.5)))
                 .build();
 
         TrajectorySequence preloadinter3 = drive.trajectorySequenceBuilder(preload2_v3_5.end())
-                .lineToLinearHeading(new Pose2d(48.5, 60, Math.toRadians(-92)))
+                .setReversed(false)
+                .splineTo(new Vector2d(51, 60), Math.toRadians(-90))
+//                .lineToLinearHeading(new Pose2d(47, 60, Math.toRadians(-94.5)))
                 .build();
 
 
@@ -419,9 +433,9 @@ public class pegging extends LinearOpMode {
                 .splineTo(new Vector2d(48.5, 15), Math.toRadians(-92))*/
 
 //                .lineToLinearHeading(new Pose2d(48, 60, Math.toRadians(-93)))
-                .lineToLinearHeading(new Pose2d(48.5, 15, Math.toRadians(-92)))
+                .lineToLinearHeading(new Pose2d(51, 15, Math.toRadians(-90)))
   //              .lineToLinearHeading(new Pose2d(48,15, Math.toRadians(-93)))
-                .addSpatialMarker(new Vector2d(48.5, 18), () -> {
+                .addSpatialMarker(new Vector2d(46.5, 21), () -> {
                     intakecycle1 = true;
                     // This marker runs at the point that gets
                     // closest to the (20, 20) coordinate
@@ -433,17 +447,17 @@ public class pegging extends LinearOpMode {
 
         TrajectorySequence deposit_v1_2 = drive.trajectorySequenceBuilder(cycle2_v1.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(48.5, 50), Math.toRadians(92))
+                .splineTo(new Vector2d(50, 50), Math.toRadians(95))
                 .splineTo(new Vector2d(40, 87.5), Math.toRadians(-235))
                 .build();
 
 
         TrajectorySequence cycle3_v1 = drive.trajectorySequenceBuilder(deposit_v1_2.end())
                 .setReversed(false)
-                .splineTo(new Vector2d(46, 60), Math.toRadians(-92))
-                .splineTo(new Vector2d(46, 23), Math.toRadians(-92))
-                .splineTo(new Vector2d(46, 14), Math.toRadians(-92))
-                .addSpatialMarker(new Vector2d(44.5, 17), () -> {
+                .splineTo(new Vector2d(49, 60), Math.toRadians(-90))
+                .splineTo(new Vector2d(49, 23), Math.toRadians(-90))
+                .splineTo(new Vector2d(49, 14.5), Math.toRadians(-90))
+                .addSpatialMarker(new Vector2d(44.5, 18), () -> {
                     intakecycle2 = true;
                     // This marker runs at the point that gets
                     // closest to the (20, 20) coordinate
@@ -454,7 +468,7 @@ public class pegging extends LinearOpMode {
 
         TrajectorySequence deposit_v1_3 = drive.trajectorySequenceBuilder(cycle3_v1.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(46, 50), Math.toRadians(92))
+                .splineTo(new Vector2d(49, 50), Math.toRadians(90))
                 .splineTo(new Vector2d(39, 87.5), Math.toRadians(-235))
                 .build();
 
@@ -648,6 +662,7 @@ public class pegging extends LinearOpMode {
 
                 case newpreload6:
                     if(timer.seconds() > 2){
+                        Otarget = 125;
                         flip1pos = 0.81;
                     }
 
@@ -711,7 +726,9 @@ public class pegging extends LinearOpMode {
                         flip1pos = 0.26;
                         wristpos = 0.87;
                     }
-                    if(intakecycle1 && timer.seconds() > 0.35){
+
+                    if(timer.seconds() > 0.75){
+                        Ltarget = intakeextendposition;
                         timer.reset();
                         state = stack5;
                     }
@@ -788,7 +805,7 @@ public class pegging extends LinearOpMode {
 
                 case inter3:
                     if(timer.seconds()>0){
-                        Otarget = 600;
+                        Otarget = 300;
                         flip1pos = .81;
                     }
                     if(timer.seconds()>0.1){
@@ -816,7 +833,7 @@ public class pegging extends LinearOpMode {
                     if(timer.seconds() > 0.3){
                         flip1pos = 0.26;
                     }
-                    if(intakecycle2 && timer.seconds() > 0.4){
+                    if(timer.seconds() > 1.5){
                         timer.reset();
                         state = newpreload14;
                     }
@@ -832,7 +849,7 @@ public class pegging extends LinearOpMode {
                     claw2pos = 0.6;
                     if(timer.seconds() > 0){
                         intakePower = -1;
-                        Ltarget = intakeextendposition - 35;
+                        Ltarget = intakeextendposition-15;
                         intake1 = intSensor2.isPressed();
                         intake2 = intSensor1.isPressed();
                         if((intake1 || intake2)) {
@@ -896,7 +913,7 @@ public class pegging extends LinearOpMode {
 
                 case newpreload19:
                     if(timer.seconds()>0.25){
-                        Otarget = 600;
+                        Otarget = 400;
                         flip1pos = .81;
                     }
                     if(timer.seconds()>0.5){
