@@ -1,60 +1,60 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.Auto;
 
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE1_DEPOSIT;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE1_INTAKE;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE1_INTER2;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE1_PRE;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE1_PRE2;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE1_TRANSFER1;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE1_TRANSFER1_5;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE1_TRANSFER3;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE1_TRANSFER4;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE1_TRANSFERINTER;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE2_DEPOSIT;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE2_INTAKE;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE2_INTER1;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE2_INTER2;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE2_INTER_5;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE2_TRANSFER1;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE2_TRANSFER1_5;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE2_TRANSFER2;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE2_TRANSFER3;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE2_TRANSFERINTER;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE3_DEPOSIT;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE3_INTAKE;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE3_INTER1;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE3_INTER2;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE3_TRANSFER1;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE3_TRANSFER2;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE3_TRANSFER3;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE3_TRANSFERINTER;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE3_TRANSFERINTER2;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.PRELOAD_YELLOW;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.PRELOAD_YELLOW_DROP;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.PRELOAD_YELLOW_INTER;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.SPIT10;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.SPIT11;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.SPIT12;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.SPIT13;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.SPIT14;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.SPIT15;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.SPIT16;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.SPIT2;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.SPIT3;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.SPIT4;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.SPIT5;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.SPIT6;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.SPIT7;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.SPIT8;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.SPIT9;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.flip.betweenflip;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.flip.initializeflip;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.flip.intake2flip;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.flip.intake3flip;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.flip.intake4flip;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.flip.intake5flip;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.flip.transferflip;
-import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.TrussAuto.State.CYCLE1_TRANSFER2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE1_DEPOSIT;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE1_INTAKE;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE1_INTER2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE1_PRE;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE1_PRE2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE1_TRANSFER1;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE1_TRANSFER1_5;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE1_TRANSFER3;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE1_TRANSFER4;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE1_TRANSFERINTER;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE2_DEPOSIT;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE2_INTAKE;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE2_INTER1;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE2_INTER2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE2_INTER_5;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE2_TRANSFER1;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE2_TRANSFER1_5;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE2_TRANSFER2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE2_TRANSFER3;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE2_TRANSFERINTER;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE3_DEPOSIT;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE3_INTAKE;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE3_INTER1;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE3_INTER2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE3_TRANSFER1;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE3_TRANSFER2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE3_TRANSFER3;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE3_TRANSFERINTER;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE3_TRANSFERINTER2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.PRELOAD_YELLOW;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.PRELOAD_YELLOW_DROP;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.PRELOAD_YELLOW_INTER;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.SPIT10;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.SPIT11;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.SPIT12;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.SPIT13;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.SPIT14;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.SPIT15;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.SPIT16;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.SPIT2;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.SPIT3;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.SPIT4;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.SPIT5;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.SPIT6;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.SPIT7;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.SPIT8;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.SPIT9;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.flip.betweenflip;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.flip.initializeflip;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.flip.intake2flip;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.flip.intake3flip;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.flip.intake4flip;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.flip.intake5flip;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.flip.transferflip;
+import static org.firstinspires.ftc.teamcode.drive.opmode.Auto.RedTrussAuto.State.CYCLE1_TRANSFER2;
 
 import android.bluetooth.le.ScanSettings;
 
@@ -78,6 +78,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.vision.Barcode;
 import org.firstinspires.ftc.teamcode.vision.BlueScanner;
+import org.firstinspires.ftc.teamcode.vision.RedScanner;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -85,8 +86,8 @@ import org.openftc.easyopencv.OpenCvWebcam;
 
 import kotlin.LateinitKt;
 
-@Autonomous(name="Truss Side Auto")
-public class TrussAuto extends LinearOpMode {
+@Autonomous(name="Red Truss Side Auto")
+public class RedTrussAuto extends LinearOpMode {
     OpenCvWebcam webcam;
 
     private DcMotorEx intakeMotor;
@@ -290,160 +291,123 @@ public class TrussAuto extends LinearOpMode {
         flip1.setPosition(0.26);
         flip2.setPosition(1-0.26);
         TrajectorySequence preload1 = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(23, 13, Math.toRadians(-45)))
+                .splineTo(new Vector2d(5, 0), Math.toRadians(0))
+                .splineTo(new Vector2d(21.5, 8), Math.toRadians(50))
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(23, 39, Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(35, -38.75, Math.toRadians(90)))
                 .build();
 
         TrajectorySequence preload2 = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(27, 7, Math.toRadians(-55)))
+                .lineToLinearHeading(new Pose2d(27, -7, Math.toRadians(55)))
                 .setReversed(true)
                 .back(2)
-                .splineTo(new Vector2d(27.5, 39), Math.toRadians(90))
+                .splineTo(new Vector2d(27.5, -38.75), Math.toRadians(-90))
                 .build();
 
         TrajectorySequence preload3 = drive.trajectorySequenceBuilder(startPose)
-                .splineTo(new Vector2d(5, 0), Math.toRadians(0))
-                .splineTo(new Vector2d(21.5, -8), Math.toRadians(-50))
+                .lineToLinearHeading(new Pose2d(23, -13, Math.toRadians(45)))
                 .setReversed(true)
-                .lineToLinearHeading(new Pose2d(35, 39, Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(23, -38, Math.toRadians(90)))
                 .build();
 
         //cycles
         TrajectorySequence preload2_v1_5 = drive.trajectorySequenceBuilder(preload1.end())
                 .setReversed(false)
-//                .splineTo(new Vector2d(-1, 18), Math.toRadians(-93))
-//                .splineTo(new Vector2d(-1, -40), Math.toRadians(-93))
-//                .turn(Math.toRadians(-70))
-//                .splineTo(new Vector2d(18, -63.5), Math.toRadians(-93))
-//                .splineTo(new Vector2d(18, -68.5), Math.toRadians(-93))
-//                .splineTo(new Vector2d(-1, 18), Math.toRadians(-93))
-//                .splineTo(new Vector2d(-1, -40), Math.toRadians(-93))
-//                .splineTo(new Vector2d(18, -63.5), Math.toRadians(-93))
-//                .splineTo(new Vector2d(18, -68.5), Math.toRadians(-93))
-//                .splineTo(new Vector2d(19, -68.5), Math.toRadians(-93))
-//                .splineToConstantHeading(new Vector2d(18, -69), Math.toRadians(0))
-                .splineTo(new Vector2d(-1, 18), Math.toRadians(-93))
-                .lineTo(new Vector2d(-1, -40))
-                .splineTo(new Vector2d(15.5, -67.85), Math.toRadians(-80))
-//
-//                .splineTo(new Vector2d(-1, 18), Math.toRadians(-93))
-//                .splineTo(new Vector2d(-1, -40), Math.toRadians(-93))
-//                .splineTo(new Vector2d(15, -69), Math.toRadians(-80))
+                .splineTo(new Vector2d(-1, 18), Math.toRadians(93))
+                .lineTo(new Vector2d(-1, 40))
+                .splineTo(new Vector2d(15.5, 69), Math.toRadians(80))
                 .build();
 
         //cycle2
         TrajectorySequence preload2_v2_5 = drive.trajectorySequenceBuilder(preload2.end())
                 .setReversed(false)
-                .splineTo(new Vector2d(-1, 18), Math.toRadians(-93))
-                .lineTo(new Vector2d(-1, -40))
-                .splineTo(new Vector2d(16, -67.5), Math.toRadians(-80))
+                .splineTo(new Vector2d(-1, -18), Math.toRadians(93))
+                .lineTo(new Vector2d(-1, 40))
+                .splineTo(new Vector2d(16.5, 69), Math.toRadians(80))
                 .build();
 
         //cycle 3
         TrajectorySequence preload2_v3_5 = drive.trajectorySequenceBuilder(preload3.end())
                 .setReversed(false)
-//                .splineTo(new Vector2d(-1, 18), Math.toRadians(-93))
-//                .splineTo(new Vector2d(-1, -40), Math.toRadians(-93))
-//                .splineTo(new Vector2d(18, -63.5), Math.toRadians(-93))
-//                .splineTo(new Vector2d(18, -68.5), Math.toRadians(-93))
+                .splineTo(new Vector2d(-1, -18), Math.toRadians(93))
+                .lineTo(new Vector2d(-1, 40))
+                .splineTo(new Vector2d(15.5, 69), Math.toRadians(80))
 
-//                .splineTo(new Vector2d(-1, 18), Math.toRadians(-93))
-//                .splineTo(new Vector2d(-1, -40), Math.toRadians(-93))
-//                .splineTo(new Vector2d(14, -68), Math.toRadians(-80))
-//                .splineTo(new Vector2d(19, -68.5), Math.toRadians(-93))
-//                .splineToConstantHeading(new Vector2d(18, -69), Math.toRadians(0))
-                .splineTo(new Vector2d(-1, 18), Math.toRadians(-93))
-                .lineTo(new Vector2d(-1, -40))
-                .splineTo(new Vector2d(15.5, -67.85), Math.toRadians(-80))
                 .build();
 
 
         TrajectorySequence deposit_v1 = drive.trajectorySequenceBuilder(preload2_v1_5.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(-1, -40), Math.toRadians(87))
-                .splineTo(new Vector2d(-1, 0), Math.toRadians(87))
-                .splineTo(new Vector2d(22, 39), Math.toRadians(87))
+                .splineTo(new Vector2d(-1, 40), Math.toRadians(-87))
+                .splineTo(new Vector2d(-1, 0), Math.toRadians(-87))
+                .splineTo(new Vector2d(22, -37.75), Math.toRadians(-87))
                 .build();
 
         TrajectorySequence deposit_v2 = drive.trajectorySequenceBuilder(preload2_v2_5.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(-1, -40), Math.toRadians(87))
-                .splineTo(new Vector2d(-1, 0), Math.toRadians(87))
-                .splineTo(new Vector2d(22, 39), Math.toRadians(87))
+                .splineTo(new Vector2d(-1, 40), Math.toRadians(-87))
+                .splineTo(new Vector2d(-1, 0), Math.toRadians(-87))
+                .splineTo(new Vector2d(22, -37.75), Math.toRadians(-87))
                 .build();
 
         TrajectorySequence deposit_v3 = drive.trajectorySequenceBuilder(preload2_v3_5.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(-1, -40), Math.toRadians(87))
-                .splineTo(new Vector2d(-1, 0), Math.toRadians(87))
-                .splineTo(new Vector2d(22, 39.5), Math.toRadians(87))
+                .splineTo(new Vector2d(-1, 40), Math.toRadians(-87))
+                .splineTo(new Vector2d(-1, 0), Math.toRadians(-87))
+                .splineTo(new Vector2d(22, -37), Math.toRadians(-87))
                 .build();
 
 
         TrajectorySequence cycle2_v1 = drive.trajectorySequenceBuilder(deposit_v1.end())
                 .setReversed(false)
-//                .splineTo(new Vector2d(-3, 18), Math.toRadians(-93))
-//                .splineTo(new Vector2d(-3, -40), Math.toRadians(-93))
-//                .splineTo(new Vector2d(14, -67.75), Math.toRadians(-85))
-                .splineTo(new Vector2d(-1.5, 18), Math.toRadians(-90))
-                .lineTo(new Vector2d(-1.5, -40))
-//                .splineTo(new Vector2d(-2, -40), Math.toRadians(-93))
-                .splineTo(new Vector2d(15.5, -68), Math.toRadians(-80))
+                .splineTo(new Vector2d(-1.5, -18), Math.toRadians(90))
+                .lineTo(new Vector2d(-1.5, 40))
+                .splineTo(new Vector2d(13, 68.25), Math.toRadians(80))
                 .build();
 
         TrajectorySequence cycle2_v2 = drive.trajectorySequenceBuilder(deposit_v2.end())
                 .setReversed(false)
-//                .splineTo(new Vector2d(-3, 18), Math.toRadians(-93))
-//                .splineTo(new Vector2d(-3, -40), Math.toRadians(-93))
-//                .splineTo(new Vector2d(14, -67.75), Math.toRadians(-85))
-                .splineTo(new Vector2d(-1.5, 18), Math.toRadians(-90))
-                .lineTo(new Vector2d(-1.5, -40))
-//                .splineTo(new Vector2d(-2, -40), Math.toRadians(-93))
-                .splineTo(new Vector2d(15.5, -67.75), Math.toRadians(-80))
+                .splineTo(new Vector2d(-1.5, -18), Math.toRadians(90))
+                .lineTo(new Vector2d(-1.5, 40))
+                .splineTo(new Vector2d(13.5, 68.25), Math.toRadians(80))
                 .build();
 
         TrajectorySequence cycle2_v3 = drive.trajectorySequenceBuilder(deposit_v3.end())
                 .setReversed(false)
-//                .splineTo(new Vector2d(-3, 18), Math.toRadians(-93))
-//                .splineTo(new Vector2d(-3, -40), Math.toRadians(-93))
-//                .splineTo(new Vector2d(14, -67.75), Math.toRadians(-85))
-                .splineTo(new Vector2d(-1.5, 18), Math.toRadians(-90))
-                .lineTo(new Vector2d(-1.5, -40))
-//                .splineTo(new Vector2d(-2, -40), Math.toRadians(-93))
-                .splineTo(new Vector2d(15, -68), Math.toRadians(-80))
+                .splineTo(new Vector2d(-1.5, -18), Math.toRadians(90))
+                .lineTo(new Vector2d(-1.5, 40))
+                .splineTo(new Vector2d(13, 68.75), Math.toRadians(80))
                 .build();
 
 
         TrajectorySequence deposit_v1_2 = drive.trajectorySequenceBuilder(cycle2_v1.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(-1.5, -40), Math.toRadians(87))
-                .splineTo(new Vector2d(-1.5, 0), Math.toRadians(87))
-                .splineTo(new Vector2d(22, 38.75), Math.toRadians(87))
+                .splineTo(new Vector2d(-3, 40), Math.toRadians(-87))
+                .splineTo(new Vector2d(-3, 0), Math.toRadians(-87))
+                .splineTo(new Vector2d(23, -38.5), Math.toRadians(-87))
                 .waitSeconds(0.25)
-//                .splineTo(new Vector2d(2.5, 43.5), Math.toRadians(45))
                 .build();
 
         TrajectorySequence deposit_v2_2 = drive.trajectorySequenceBuilder(cycle2_v2.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(-1.5, -40), Math.toRadians(87))
-                .splineTo(new Vector2d(-1.5, 0), Math.toRadians(87))
-                .splineTo(new Vector2d(22, 39), Math.toRadians(87))
+                .splineTo(new Vector2d(-3, 40), Math.toRadians(-87))
+                .splineTo(new Vector2d(-3, 0), Math.toRadians(-87))
+                .splineTo(new Vector2d(23, -37.75), Math.toRadians(-87))
                 .waitSeconds(0.25)
 //                .splineTo(new Vector2d(2.5, 43.5), Math.toRadians(45))
                 .build();
 
         TrajectorySequence deposit_v3_2 = drive.trajectorySequenceBuilder(cycle2_v3.end())
                 .setReversed(true)
-                .splineTo(new Vector2d(-1.5, -40), Math.toRadians(87))
-                .splineTo(new Vector2d(-1.5, 0), Math.toRadians(87))
-                .splineTo(new Vector2d(22, 39.5), Math.toRadians(87))
+                .splineTo(new Vector2d(-3, 40), Math.toRadians(-87))
+                .splineTo(new Vector2d(-3, 0), Math.toRadians(-87))
+                .splineTo(new Vector2d(23, -38), Math.toRadians(-87))
                 .waitSeconds(0.25)
                 .build();
 
 
         TrajectorySequence cycle3_v1 = drive.trajectorySequenceBuilder(deposit_v1_2.end())
-                .lineTo(new Vector2d(0, 34))
+                .lineTo(new Vector2d(0, -34))
                 .build();
 
 
@@ -475,7 +439,7 @@ public class TrussAuto extends LinearOpMode {
         telemetry.update();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        BlueScanner scanner = new BlueScanner(telemetry);
+        RedScanner scanner = new RedScanner(telemetry);
         webcam.setPipeline(scanner);
 
         webcam.setMillisecondsPermissionTimeout(2500); // Timeout for obtaining permission is configurable. Set before opening.
@@ -672,7 +636,9 @@ public class TrussAuto extends LinearOpMode {
                     break;
 
                 case CYCLE1_TRANSFER1:
-                    intakePower = -1;
+                    if(timer.seconds() > 0.2){
+                        intakePower = -1;
+                    }
                     if(timer.seconds() > 0.7){
                         latch.setPosition(0.7);
                         flip = transferflip;
@@ -790,7 +756,8 @@ public class TrussAuto extends LinearOpMode {
                     }
 
                     if(intake1 && intake2 && !drive.isBusy()) {
-                        intakePower = 0.25;
+                        intakePower = 0.4;
+                        servoPosition = servointake3pos;
                         intake1 = false;
                         intake2 = false;
                         timer.reset();

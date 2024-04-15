@@ -147,7 +147,9 @@ public class NewTeleop3 extends OpMode {
     private boolean left = false;
     private boolean right = false;
     boolean onOff = false;
-    boolean onOff2 = false;
+
+    boolean panoff = false;
+    boolean intakestuck = false;
     boolean extendInt = false;
     boolean intaking = false;
     public DcMotorEx intakeLeftExt;
@@ -290,6 +292,9 @@ public class NewTeleop3 extends OpMode {
     public Servo climb;
     public Servo airplane;
 
+    public double rotslow = 1;
+
+
     public Servo switchservo;
     public AnalogInput distance1;
     public static double Hp = 0.03;
@@ -329,17 +334,17 @@ public class NewTeleop3 extends OpMode {
         intSensor1 = hardwareMap.get(TouchSensor.class, "0t");
         intSensor2 = hardwareMap.get(TouchSensor.class, "1t");
 
-        pivot1 = hardwareMap.get(Servo.class, "3s");
-        pivot2 = hardwareMap.get(Servo.class, "0ss");
+        pivot1 = hardwareMap.get(Servo.class, "3s");//
+        pivot2 = hardwareMap.get(Servo.class, "0ss");//
         flip1 = hardwareMap.get(Servo.class, "4s");
         flip2 = hardwareMap.get(Servo.class, "5s");
         airplane = hardwareMap.get(Servo.class, "2s");
 
-        wrist = hardwareMap.get(Servo.class, "4ss");
+        wrist = hardwareMap.get(Servo.class, "4ss");//
         claw1 = hardwareMap.get(Servo.class, "0s");
         claw2 = hardwareMap.get(Servo.class, "1s");
-        pan = hardwareMap.get(Servo.class, "2ss");
-        climb = hardwareMap.get(Servo.class, "3ss");
+        pan = hardwareMap.get(Servo.class, "2ss");//
+        climb = hardwareMap.get(Servo.class, "3ss");//
 
         intakeLeftExt.setDirection(DcMotorSimple.Direction.REVERSE);
         outtakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -386,7 +391,7 @@ public class NewTeleop3 extends OpMode {
         double max;
         double axial   = -gamepad1.left_stick_y * slowmode;
         double lateral =  gamepad1.left_stick_x * slowmode * strafeslowmode;
-        double yaw     =  gamepad1.right_stick_x * slowmode;
+        double yaw     =  gamepad1.right_stick_x * slowmode * rotslow;
 
 
         double leftFrontPower  = axial + lateral + yaw;
@@ -545,31 +550,56 @@ public class NewTeleop3 extends OpMode {
                 if(gamepad2.right_stick_y != 0){
                     Ltarget = Ltarget - lstickpos1;
                 }
+                if(gamepad1.right_trigger > 0.5){
+                    Ltarget = 350;
+                }
+                if(gamepad1.left_trigger > 0.5){
+                    Ltarget = -50;
+                }
 
                 if(((gamepad1.right_bumper||gamepad2.right_bumper) && !onOff && holdtimer.seconds() > 0.25 && (intakeLeftExt.getVelocity() < 50))||(extendInt && intakeLeftExt.getCurrentPosition() > 500)){
                     extendInt = false;
+                    rotslow = 0.65;
                     holdtimer.reset();
                     onOff = true;
                     //intake
                     servoPosition = servointakepos;
 //                    generateMotionProfile(pivot1.getPosition(), servointakepos, maxvel1, maxaccel1);
                     intakePower = -1;
+                    latch.setPosition(0.7);
                 }else if((gamepad1.right_bumper||gamepad2.right_bumper) && onOff && holdtimer.seconds() > 0.25 && !(intakeLeftExt.getVelocity() > 25)){
                     holdtimer.reset();
                     onOff = false;
+                    rotslow = 1;
                     intakePower = 0;
                     servoPosition = 0.7;
+                    latch.setPosition(0.7);
 //                    generateMotionProfile(pivot1.getPosition(), servointake1pos, maxvel1, maxaccel1);
                 }else if(gamepad1.left_bumper){
                     holdtimer.reset();
+                    rotslow = 1;
                     onOff = false;
                     intakePower = 1;
+                    latch.setPosition(0.3);
                 }
 
-                if((gamepad1.dpad_up)||(intSensor1.isPressed() && intSensor2.isPressed())){
+                if(gamepad2.right_stick_button){
+                    intakestuck = true;
+                }else if(gamepad2.left_stick_button){
+                    intakestuck = false;
+                }
+
+                if(intakestuck){
+                    timer.reset();
+                    New = retardintake1;
+                }
+                if(((gamepad1.dpad_up)||(intSensor1.isPressed() && intSensor2.isPressed())) && !intakestuck){
                     intaking = false;
+                    onOff = false;
+                    rotslow = 1;
                     slow = 1;
                     turnslow = 1;
+                    Ltarget = -50;
 //                    intakeMotor.setPower(-0.5);
                     intakePower = -1;
                     timer.reset();
@@ -607,7 +637,7 @@ public class NewTeleop3 extends OpMode {
                 if(timer.seconds() > 0.2){
                     intakePower = -1;
                     timer.reset();
-                    New = intakeinter1;
+                    New = intake;
                 }
                 break;
 
@@ -639,7 +669,7 @@ public class NewTeleop3 extends OpMode {
                 if(timer.seconds() > 0){
                     Otarget = 35;
                     claw1pos = 0.9;
-                    claw2pos = 0;
+                    claw2pos = 0.12;
                     timer.reset();
                     New = outtakepre;
                 }
@@ -669,7 +699,7 @@ public class NewTeleop3 extends OpMode {
                     if(gamepad2.cross || gamepad1.cross){
                         if(timer.seconds() > 0.5){
                             Otarget = 200;
-                            flip1pos = 0.81;
+                            flip1pos = 0.78;
                             intakePower = 0;
                             timer.reset();
                             New = barrier;
@@ -736,8 +766,23 @@ public class NewTeleop3 extends OpMode {
 //                    panpos = 0.47;
 //                }
 
-                panpos = Range.clip(panpositioncalc, 0.395, 0.54);
 
+                if(gamepad2.dpad_down){
+                    flip1pos = 0.81;
+                }
+                else{
+                    flip1pos = 0.78;
+                }
+
+//                if((gamepad2.dpad_down && !panoff && holdtimer.seconds() > 0.25)){
+//                    holdtimer.reset();
+//                    panoff = true;
+//                    panpos = Range.clip(panpositioncalc, 0.395, 0.54);
+//                }else if(gamepad2.dpad_down && panoff && holdtimer.seconds() > 0.25){
+//                    holdtimer.reset();
+//                    panoff = false;
+//                    panpos = 0.47;
+//                }
                 if((gamepad1.left_bumper||gamepad2.left_bumper) && timer.seconds() > 0.5){
                     left = true;
                     claw1pos = 0.4;
@@ -756,7 +801,7 @@ public class NewTeleop3 extends OpMode {
 
             case depositpen:
                 if(timer.seconds() > 0){
-                    flip1pos = 0.83;
+                    flip1pos = 0.81;
                     timer.reset();
                     New = depositpenis;
                 }
@@ -764,7 +809,7 @@ public class NewTeleop3 extends OpMode {
 
             case depositpenis:
                 if(timer.seconds() > 0.3){
-                    flip1pos = 0.81;
+                    flip1pos = 0.78;
                 }
                 if(timer.seconds() > 0.31 && (gamepad2.cross || gamepad1.cross)){
                     timer.reset();
